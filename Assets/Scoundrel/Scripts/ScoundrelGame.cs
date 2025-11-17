@@ -14,7 +14,7 @@ public class ScoundrelGame : MonoBehaviour
     public int wizardMana = 0;
     public int wizardMaxMana = 15;
     public Archetype player;
-    public List<Card> monstersSlainWithWeapon;
+    private List<Card> monstersSlainWithWeapon;
     private Deck deck;
     private TMP_Text healthText;
     private TMP_Text damageText;
@@ -22,6 +22,10 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject skipButton;
     private string playerName = "Scott";
     private bool noPotThisRoom = true;
+    private bool weaponUsed = false;
+    private Color precisionColor;
+    private GameObject elfPrecision;
+    private GameObject rageButton;
     
     void StartGame()
     {
@@ -36,6 +40,8 @@ public class ScoundrelGame : MonoBehaviour
         weaponButton = GameObject.Find("Weapon");
 
         skipButton = GameObject.Find("SkipButton");
+
+        monstersSlainWithWeapon = new List<Card>();
         
         deck.CreateNew52();
         NewRoom();
@@ -46,12 +52,13 @@ public class ScoundrelGame : MonoBehaviour
 
         player = p;
 
-        switch (p)
+        switch (player)
         {
             // Knight is more tanky
             case Archetype.Knight:
                 maxHealth += 5;
                 health += 5;
+
                 playerName = "Reynault - Knight";
                 break;
 
@@ -70,6 +77,12 @@ public class ScoundrelGame : MonoBehaviour
                 maxHealth -= 5;
                 health -= 5;
 
+                if(elfPrecision == null)
+                    elfPrecision = GameObject.Find("Precision");
+
+                elfPrecision.GetComponent<Image>().enabled = true;
+                precisionColor = elfPrecision.GetComponent<Image>().color;
+                elfPrecision.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
 
                 playerName = "Questor - Elf";
                 break;
@@ -77,7 +90,9 @@ public class ScoundrelGame : MonoBehaviour
             // Warrior can once per game go into a rage and destroy everything in the room without taking any damage
             case Archetype.Warrior:
 
-                GameObject rageButton = GameObject.Find("Rage");
+                if(rageButton == null)
+                    rageButton = GameObject.Find("Rage");
+                    
                 rageButton.GetComponent<Button>().enabled = true;
                 rageButton.GetComponent<Image>().enabled = true;
                 rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
@@ -88,6 +103,25 @@ public class ScoundrelGame : MonoBehaviour
         }
 
         StartGame();
+    }
+
+    void DisableArchSpec()
+    {
+        // Warrior
+        if(player == Archetype.Warrior){
+            GameObject rageButton = GameObject.Find("Rage");
+            rageButton.GetComponent<Button>().enabled = false;
+            rageButton.GetComponent<Image>().enabled = false;
+            rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        }
+
+        else if(player == Archetype.Elf)
+        {
+            GameObject elfPrecision = GameObject.Find("Precision");
+            // make the image appear active again on cleanup
+            elfPrecision.GetComponent<Image>().enabled = false;
+            elfPrecision.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        }
     }
 
     public void CardSelected(CardOnObj cardO)
@@ -108,7 +142,7 @@ public class ScoundrelGame : MonoBehaviour
             noPotThisRoom = false;
             health += cardO.card.value;
 
-            Debug.Log($"halth > maxHealth is: {health > maxHealth}");
+            //Debug.Log($"halth > maxHealth is: {health > maxHealth}");
             if(health > maxHealth)
                 health = maxHealth;
 
@@ -118,6 +152,13 @@ public class ScoundrelGame : MonoBehaviour
         // weapons
         else if (cardO.card.suit == Suit.Diamonds)
         {
+
+            if(player == Archetype.Elf)
+            {
+                elfPrecision.GetComponent<Image>().color = precisionColor;
+                weaponUsed = false;
+            }
+
             weaponVal = cardO.card.value;
             weaponDamage = 14;
 
@@ -155,8 +196,6 @@ public class ScoundrelGame : MonoBehaviour
                     numSpotsFilled--;
             }
 
-
-
             if(numSpotsFilled <= 1)
             {
                 skipButton.GetComponent<Button>().interactable = true;
@@ -165,13 +204,17 @@ public class ScoundrelGame : MonoBehaviour
         }
         // disable all buttons on death
         else
-        {
-            Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+            PlayerDeath();
+    }
 
-            foreach (Button button in buttons)
-            {
+    void PlayerDeath()
+    {
+        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+
+        foreach (Button button in buttons)
+        {
+            if(button.transform.parent.name == "GameCanvas")
                 button.interactable = false;
-            }
         }
     }
 
@@ -189,7 +232,7 @@ public class ScoundrelGame : MonoBehaviour
         // win!
         if(deck.cards.Count + numSpotsFilled < 4)
         {
-            winRound();
+            WinRound();
         }
 
         else{
@@ -216,7 +259,7 @@ public class ScoundrelGame : MonoBehaviour
         //deck.done = false;
 
         deck.TuckCards();
-        Debug.Log($"Cards in deck after tuck: {deck.cards.Count}");
+        //Debug.Log($"Cards in deck after tuck: {deck.cards.Count}");
 
         //while(!deck.done);
 
@@ -246,10 +289,20 @@ public class ScoundrelGame : MonoBehaviour
             if(card.value - weaponVal > 0)
                 health -= card.value - weaponVal;
 
-            Debug.Log(card.value - weaponVal);
-
-            weaponDamage = card.value;
-            damageText.text = $"{weaponDamage - 1}";
+            if(player == Archetype.Elf && !weaponUsed)
+            {
+                weaponUsed = true;
+                elfPrecision.GetComponent<Image>().color = precisionColor.WithAlphaMultiplied(0.5f);
+            }
+            else if(player != Archetype.Elf || weaponUsed)
+            {
+                weaponDamage = card.value;
+            }
+            
+            if(weaponDamage != 14)
+                damageText.text = $"{weaponDamage - 1}";
+            else
+                damageText.text = $"{weaponDamage}";
 
             monstersSlainWithWeapon.Add(card);
         }
@@ -285,14 +338,49 @@ public class ScoundrelGame : MonoBehaviour
         }
     }
 
-    void winRound()
+    void WinRound()
     {
         Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
         foreach (Button button in buttons)
         {
-            button.interactable = false;
+            if(button.transform.parent.name == "GameCanvas")
+                button.interactable = false;
         }
+    }
+
+    public void CleanupNewRound()
+    {
+        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+
+        foreach (Button button in buttons)
+        {
+            button.interactable = true;
+
+            if(button.tag == "Card")
+                Destroy(button.gameObject);
+        }
+
+        health = 20;
+        maxHealth = 20;
+
+        deck.slotsUsed = new List<bool> {false, false, false, false};
+
+        GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
+        GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
+        GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+
+        monstersSlainWithWeapon.Clear();
+
+        weaponUsed = false;
+
+        DisableArchSpec();
+
+        damageText.text = "0";
+        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+
+        GameObject.Find("GameCanvas").GetComponent<AudioSource>().Stop();
+
     }
 
 }

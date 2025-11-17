@@ -1,5 +1,7 @@
+[System.Serializable]
 public enum Suit{Hearts = 1, Diamonds, Clubs, Spades,}
 
+[System.Serializable]
 public class Card
 {
     public Suit suit;

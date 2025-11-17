@@ -33,7 +33,7 @@ public class MainMenu : MonoBehaviour
     public void StartGame(Archetype p)
     {
         // turn main menu off and game screen on
-        gameObject.SetActive(false);
+        GetComponent<Canvas>().enabled = false;
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
         GameObject.Find("GameCanvas").GetComponent<AudioSource>().Play();
         

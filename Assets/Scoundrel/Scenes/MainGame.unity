@@ -256,7 +256,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 359.1
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -281,7 +281,7 @@ Transform:
   m_GameObject: {fileID: 358928886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -61.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -551,6 +551,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 136
       objectReference: {fileID: 0}
+    - target: {fileID: 3036223892700940092, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
+      propertyPath: manaGem
+      value: 
+      objectReference: {fileID: 21300000, guid: 4c501d20cb7537b4a928958eed216504, type: 3}
     - target: {fileID: 3046885915049191650, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
       propertyPath: m_Name
       value: GameCanvas
@@ -605,7 +609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773115565174936388, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 500
+      value: 521.6
       objectReference: {fileID: 0}
     - target: {fileID: 5773115565174936388, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -743,11 +747,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1240405612496513821, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 7.2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1240405612496513821, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -127.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338291505224430155, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 1556429006762983193, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_fontAsset
@@ -844,6 +852,22 @@ PrefabInstance:
     - target: {fileID: 2605573056141850400, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657674901722323706, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 279.9652
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657674901722323706, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 137.9617
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657674901722323706, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2657674901722323706, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -180.98085
       objectReference: {fileID: 0}
     - target: {fileID: 3098827380109872739, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_fontAsset
@@ -976,20 +1000,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
+      propertyPath: m_text
+      value: The Warrior can go into a berserker rage once per dungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_fontSize
       value: 24.4
       objectReference: {fileID: 0}
     - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_margin.w
-      value: -38.579803
+      value: -0.88191223
       objectReference: {fileID: 0}
     - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_margin.x
-      value: -21.069427
+      value: 0.6354065
       objectReference: {fileID: 0}
     - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_margin.z
-      value: -24.324127
+      value: -1.4768372
       objectReference: {fileID: 0}
     - target: {fileID: 8384355555092382735, guid: 13fcd11f311f0384dae7c4f45abea6cc, type: 3}
       propertyPath: m_fontAsset
@@ -1234,8 +1262,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 358928889}
-  - {fileID: 2992813207667140484}
   - {fileID: 6996731560300136657}
+  - {fileID: 2992813207667140484}
   - {fileID: 7215898671023072819}
   - {fileID: 1352943064}
   - {fileID: 4438319619378422833}

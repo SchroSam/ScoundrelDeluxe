@@ -27,6 +27,8 @@ public class Deck : MonoBehaviour
 
     public Sprite aceSpades;
 
+    public Sprite manaGem;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -79,7 +81,10 @@ public class Deck : MonoBehaviour
                 break;
 
             case Suit.Diamonds:
-                obj.GetComponent<Image>().sprite = smallDiamonds;
+                if(FindFirstObjectByType<ScoundrelGame>().player != Archetype.Wizard)
+                    obj.GetComponent<Image>().sprite = smallDiamonds;
+                else
+                    obj.GetComponent<Image>().sprite = manaGem;
                 break;
 
             case Suit.Clubs:

@@ -918,9 +918,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You start by default with 20 health, and o weapon. The game ends when you
-    either complete the dungeon by getting to the bottom of the deck, or when your
-    health reaches 0 and you die
+  m_text: You start by default with 20 health, and no weapon. The game ends when
+    you either complete the dungeon by getting to the bottom of the deck, or when
+    your health reaches 0 and you die
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
   m_sharedMaterial: {fileID: -7292529300924916405, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
@@ -3793,7 +3793,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 0.084
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

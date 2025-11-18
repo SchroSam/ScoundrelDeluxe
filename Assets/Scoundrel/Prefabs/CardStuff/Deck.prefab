@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 2336198680332364773, guid: 05be64cfd8916ad4a86fc102a9af5ee7, type: 3}
+  cards: []
   slotPositions:
   - {fileID: 2164924347228401749}
   - {fileID: 2561886010253512700}
@@ -206,10 +207,14 @@ MonoBehaviour:
   - {fileID: 3648118114166445853}
   slotsUsed: 00000000
   done: 0
-  smallHearts: {fileID: 0}
-  smallDiamonds: {fileID: 0}
+  smallHearts: {fileID: 21300000, guid: 8ca22adc3e90b1d4e9b15802af10a1cb, type: 3}
+  smallDiamonds: {fileID: 21300000, guid: f5710d569996de146ad1ecbe65099d7b, type: 3}
   smallClubs: {fileID: 0}
-  smallSpades: {fileID: 0}
+  midClubs: {fileID: 0}
+  aceClubs: {fileID: 0}
+  smallSpades: {fileID: 21300000, guid: 361837d0ff91dc945a70d153e046ee99, type: 3}
+  midSpades: {fileID: 0}
+  aceSpades: {fileID: 0}
 --- !u!1 &7393170461848003251
 GameObject:
   m_ObjectHideFlags: 0

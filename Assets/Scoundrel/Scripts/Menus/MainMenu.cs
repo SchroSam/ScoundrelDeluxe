@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 public enum Archetype{Knight, Wizard, Elf, Warrior}
 
 public class MainMenu : MonoBehaviour

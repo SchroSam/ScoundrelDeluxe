@@ -22,6 +22,11 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    public void QuitToDesktop()
+    {
+        Application.Quit();
+    }
+
     public void ChangeMusicVolume()
     {
         music.volume = volumeSlider.value;

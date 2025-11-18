@@ -42,6 +42,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: PauseMenu
+    uniqueID: 3798392231
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

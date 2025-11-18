@@ -75,11 +75,11 @@ public class Deck : MonoBehaviour
         switch (suit)
         {
             case Suit.Hearts:
-
+                obj.GetComponent<Image>().sprite = smallHearts;
                 break;
 
             case Suit.Diamonds:
-
+                obj.GetComponent<Image>().sprite = smallDiamonds;
                 break;
 
             case Suit.Clubs:
@@ -95,7 +95,7 @@ public class Deck : MonoBehaviour
 
             case Suit.Spades:
                 if(value < 6)
-                    break;
+                    obj.GetComponent<Image>().sprite = smallSpades;
 
                 else if(value < 11)
                     obj.GetComponent<Image>().sprite = midSpades;

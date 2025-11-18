@@ -26,19 +26,28 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject elfPrecision;
     private GameObject rageButton;
     private GameObject spellSlot;
-    
+    private TMP_Text winLoseText;
+    public string winMessage = "Dungeon Cleared - Success";
+    public string loseMessage = "You have fallen";
     void StartGame()
     {
-        deck = FindFirstObjectByType<Deck>();
+        if(deck == null)
+            deck = FindFirstObjectByType<Deck>();
 
         GameObject.Find("Name").GetComponent<TMP_Text>().text = playerName;
 
-        healthText = GameObject.Find("Health").GetComponent<TMP_Text>();
+        if(healthText == null)
+            healthText = GameObject.Find("Health").GetComponent<TMP_Text>();
+
         healthText.text = $"Health: {health}/{maxHealth}";
 
-        skipButton = GameObject.Find("SkipButton");
+        if(skipButton == null)
+            skipButton = GameObject.Find("SkipButton");
 
         monstersSlainWithWeapon = new List<Card>();
+
+        if(winLoseText == null)
+            winLoseText = GameObject.Find("WinLoseText").GetComponent<TMP_Text>();
         
         deck.CreateNew52();
         NewRoom();
@@ -201,7 +210,7 @@ public class ScoundrelGame : MonoBehaviour
                 monstersSlainWithWeapon = new List<Card>();
 
                 weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
-                weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().color = Color.red;
+                weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
                 weaponButton.GetComponent<Button>().interactable = true;
 
                 damageText.text = $"{14}";
@@ -264,16 +273,7 @@ public class ScoundrelGame : MonoBehaviour
             PlayerDeath();
     }
 
-    void PlayerDeath()
-    {
-        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
-        foreach (Button button in buttons)
-        {
-            if(button.transform.parent.name == "GameCanvas" || button.transform.parent.name == "Deck")
-                button.interactable = false;
-        }
-    }
 
     public void NewRoom()
     {
@@ -434,6 +434,25 @@ public class ScoundrelGame : MonoBehaviour
 
     void WinRound()
     {
+        winLoseText.text = winMessage;
+        winLoseText.enabled = true;
+        
+        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
+
+        foreach (Button button in buttons)
+        {
+            if(button.transform.parent.name == "GameCanvas" || button.transform.parent.name == "Deck")
+                button.interactable = false;
+        }
+
+        GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
+    }
+
+    void PlayerDeath()
+    {
+        winLoseText.text = loseMessage;
+        winLoseText.enabled = true;
+
         Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
         foreach (Button button in buttons)
@@ -445,36 +464,40 @@ public class ScoundrelGame : MonoBehaviour
 
     public void CleanupNewRound()
     {
-        Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
-
-        foreach (Button button in buttons)
+        if(GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled == false)
         {
-            button.interactable = true;
+            Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
-            if(button.tag == "Card")
-                Destroy(button.gameObject);
+            foreach (Button button in buttons)
+            {
+                button.interactable = true;
+
+                if(button.tag == "Card")
+                    Destroy(button.gameObject);
+            }
+
+            health = 20;
+            maxHealth = 20;
+
+            deck.slotsUsed = new List<bool> {false, false, false, false};
+
+            GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
+            GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
+            GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+
+            monstersSlainWithWeapon.Clear();
+
+            weaponUsed = false;
+            winLoseText.enabled = false;
+
+            DisableArchSpec();
+
+            damageText.text = "0";
+            weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+            weaponButton.GetComponent<Button>().interactable = false;
+
+            GameObject.Find("GameCanvas").GetComponent<AudioSource>().Stop();
         }
-
-        health = 20;
-        maxHealth = 20;
-
-        deck.slotsUsed = new List<bool> {false, false, false, false};
-
-        GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
-        GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
-        GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
-
-        monstersSlainWithWeapon.Clear();
-
-        weaponUsed = false;
-
-        DisableArchSpec();
-
-        damageText.text = "0";
-        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
-        weaponButton.GetComponent<Button>().interactable = false;
-
-        GameObject.Find("GameCanvas").GetComponent<AudioSource>().Stop();
 
     }
 

@@ -49,3 +49,7 @@ MonoBehaviour:
   weaponVal: 0
   weaponDamage: 2147483647
   usingWeapon: 0
+  wizardMana: 0
+  player: 0
+  winMessage: Success - Dungeon Cleared
+  loseMessage: You have fallen

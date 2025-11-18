@@ -120,6 +120,8 @@ public class Deck : MonoBehaviour
                 FlipTop(slotPositions[i], i);
             }                
         }
+
+        GameObject.Find("Progress").GetComponent<Slider>().value = 1 - ((float)cards.Count/fullDeck.Count);
     }
 
     //Fisher-Yattes random list scramble

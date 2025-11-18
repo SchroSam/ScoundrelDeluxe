@@ -6,9 +6,17 @@ public enum Archetype{Knight, Wizard, Elf, Warrior}
 public class MainMenu : MonoBehaviour
 {
     private GameObject playerManager;
+
     void Start()
     {
         playerManager = FindFirstObjectByType<ScoundrelGame>().gameObject;
+    }
+
+    public void HowToPlay()
+    {
+        GetComponent<Canvas>().enabled = false;
+        GameObject.Find("HowToPlayCanvas").GetComponent<Canvas>().enabled = true;
+        GameObject.Find("HowToPlayCanvas").GetComponent<AudioSource>().Play();
     }
 
     public void Knight()

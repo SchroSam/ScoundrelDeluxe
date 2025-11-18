@@ -3,13 +3,15 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    private AudioSource music;
+    private AudioSource gameMusic;
+    private AudioSource instructionMusic;
     private Slider volumeSlider;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        music = GameObject.Find("GameCanvas").GetComponent<AudioSource>();
+        gameMusic = GameObject.Find("GameCanvas").GetComponent<AudioSource>();
+        instructionMusic = GameObject.Find("HowToPlayCanvas").GetComponent<AudioSource>();
         volumeSlider = GameObject.Find("VolumeSlider").GetComponent<Slider>();
     }
 
@@ -29,6 +31,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ChangeMusicVolume()
     {
-        music.volume = volumeSlider.value;
+        gameMusic.volume = volumeSlider.value;
+        instructionMusic.volume = volumeSlider.value;
     }
 }

@@ -16,7 +16,7 @@ public class MainMenu : MonoBehaviour
     {
         GetComponent<Canvas>().enabled = false;
         GameObject.Find("HowToPlayCanvas").GetComponent<Canvas>().enabled = true;
-        GameObject.Find("HowToPlayCanvas").GetComponent<AudioSource>().Play();
+        AudioPlayer.instance.PlayMusic("Bard-Instructions");
     }
 
     public void Knight()
@@ -44,7 +44,8 @@ public class MainMenu : MonoBehaviour
         // turn main menu off and game screen on
         GetComponent<Canvas>().enabled = false;
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
-        GameObject.Find("GameCanvas").GetComponent<AudioSource>().Play();
+        //GameObject.Find("GameCanvas").GetComponent<AudioSource>().Play();
+        AudioPlayer.instance.PlayMusic("Final Fantasy 7 Boss battle");
         
 
         // assign player archetype

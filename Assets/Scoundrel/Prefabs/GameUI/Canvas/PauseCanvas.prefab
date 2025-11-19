@@ -311,8 +311,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Game
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: facc01f248c8fda4985234978f6c459f, type: 2}
+  m_sharedMaterial: {fileID: -7292529300924916405, guid: facc01f248c8fda4985234978f6c459f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -616,8 +616,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Quit to Desktop
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: facc01f248c8fda4985234978f6c459f, type: 2}
+  m_sharedMaterial: {fileID: -7292529300924916405, guid: facc01f248c8fda4985234978f6c459f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -827,8 +827,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Music Volume
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
+  m_sharedMaterial: {fileID: -7292529300924916405, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -980,10 +980,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1355557062323799270}
   m_HandleRect: {fileID: 1408818541459301117}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: -20
+  m_MaxValue: 20
   m_WholeNumbers: 0
-  m_Value: 0.084
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

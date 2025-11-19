@@ -496,7 +496,7 @@ public class ScoundrelGame : MonoBehaviour
             weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
             weaponButton.GetComponent<Button>().interactable = false;
 
-            GameObject.Find("GameCanvas").GetComponent<AudioSource>().Stop();
+            AudioPlayer.instance.StopMusic();
         }
 
     }

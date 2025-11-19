@@ -3,16 +3,15 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    private AudioSource gameMusic;
-    private AudioSource instructionMusic;
-    private Slider volumeSlider;
+    private MixerController mixer;
+    private Slider musicVolumeSlider;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gameMusic = GameObject.Find("GameCanvas").GetComponent<AudioSource>();
-        instructionMusic = GameObject.Find("HowToPlayCanvas").GetComponent<AudioSource>();
-        volumeSlider = GameObject.Find("VolumeSlider").GetComponent<Slider>();
+        mixer = FindFirstObjectByType<MixerController>();
+        musicVolumeSlider = GameObject.Find("VolumeSlider").GetComponent<Slider>();
     }
 
     // Update is called once per frame
@@ -31,7 +30,6 @@ public class PauseMenu : MonoBehaviour
 
     public void ChangeMusicVolume()
     {
-        gameMusic.volume = volumeSlider.value;
-        instructionMusic.volume = volumeSlider.value;
+        mixer.SetMusicVolume(musicVolumeSlider.value);
     }
 }

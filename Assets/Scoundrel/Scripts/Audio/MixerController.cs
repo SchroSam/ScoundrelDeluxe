@@ -15,9 +15,19 @@ public class MixerController : MonoBehaviour
     }
     public void SetMusicVolume(float volume)
     {
-        savedMusicVol = volume;
+        
         //masterMixer.SetFloat("MusicVol", Mathf.Log10(volume) * 113.6f); // For use with a slider from 0.5 to 1.5
-        masterMixer.SetFloat("MusicVol", volume);
+
+        if(volume != -20f)
+        {
+            masterMixer.SetFloat("MusicVol", volume);
+            savedMusicVol = volume;
+        }
+        else
+        {
+            masterMixer.SetFloat("MusicVol", -80f);
+            savedMusicVol = -80f;
+        }
     }
 
     public void SetSFXVolume(float volume)

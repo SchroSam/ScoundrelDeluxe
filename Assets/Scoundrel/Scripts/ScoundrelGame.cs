@@ -456,7 +456,7 @@ public class ScoundrelGame : MonoBehaviour
         // actual damage logic
         if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != 14))
             health -= card.value;
-        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || weaponDamage == 14)
+        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == 14)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
         {
             if(card.value - weaponVal > 0)
                 health -= card.value - weaponVal;

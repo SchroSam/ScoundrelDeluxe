@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,25 +9,29 @@ public class ScoundrelGame : MonoBehaviour
     public int health = 20;
     public int maxHealth = 20;
     public int weaponVal = 0;
-    public int weaponDamage = 14;
-    public bool usingWeapon = false;
-    public int wizardMana = 0;
+    public int elfWeaponVal = 0;
+    private int weaponDamage = 14;
+    public int elfWeaponDamage = 14;
+    //public bool usingWeapon = false;
+    private int wizardMana = 0;
     private int wizardMaxMana = 15;
     public Archetype player;
-    private List<Card> monstersSlainWithWeapon;
+    private List<Card> monstersSlain;
     private Deck deck;
     private TMP_Text healthText;
     private TMP_Text damageText;
+    private TMP_Text elfDamageText;
     private GameObject weaponButton;
+    private GameObject elfWeaponButton;
+    private GameObject primaryWeaponToggle;
     private GameObject skipButton;
     private string playerName = "Scott";
     private bool noPotThisRoom = true;
-    private bool weaponUsed = false;
-    private Color precisionColor;
-    private GameObject elfPrecision;
     private GameObject rageButton;
     private GameObject spellSlot;
     private TMP_Text winLoseText;
+    private Tuple<bool, bool> elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
+    public bool elfWeaponPrimary = false;
     public string winMessage = "Dungeon Cleared - Success";
     public string loseMessage = "You have fallen";
     void StartGame()
@@ -44,7 +49,7 @@ public class ScoundrelGame : MonoBehaviour
         if(skipButton == null)
             skipButton = GameObject.Find("SkipButton");
 
-        monstersSlainWithWeapon = new List<Card>();
+        monstersSlain = new List<Card>();
 
         if(winLoseText == null)
             winLoseText = GameObject.Find("WinLoseText").GetComponent<TMP_Text>();
@@ -55,17 +60,23 @@ public class ScoundrelGame : MonoBehaviour
 
     public void ChooseArch(Archetype p)
     {
-        damageText = GameObject.Find("Damage").GetComponent<TMP_Text>();
-        weaponButton = GameObject.Find("Weapon");
+        if(damageText == null)
+            damageText = GameObject.Find("Damage").GetComponent<TMP_Text>();
+        if(weaponButton == null)
+            weaponButton = GameObject.Find("Weapon");
+        if(elfDamageText == null)
+            elfDamageText = GameObject.Find("ElfDamage").GetComponent<TMP_Text>();
+        if(elfWeaponButton == null)
+            elfWeaponButton = GameObject.Find("ElfWeapon");
 
         player = p;
 
         switch (player)
         {
-            // Knight is more tanky - easiest for new players
+            // Knight is more tanky - most vanilla experience
             case Archetype.Knight:
-                maxHealth += 5;
-                health += 5;
+                maxHealth += 7;
+                health += 7;
 
                 playerName = "Reynault - Knight";
                 break;
@@ -95,17 +106,24 @@ public class ScoundrelGame : MonoBehaviour
                 playerName = "Merlin - Wizard";
                 break;
 
-            // Elf is less healthy, but the first time they hit an enemy with a given weapon, the weapon takes no damage
+            // Elf is less healthy, but they have two weapon fighting
             case Archetype.Elf:
                 maxHealth -= 5;
                 health -= 5;
 
-                if(elfPrecision == null)
-                    elfPrecision = GameObject.Find("Precision");
+                elfWeaponButton.GetComponent<Image>().enabled = true;
+                elfWeaponButton.GetComponent<Button>().enabled = true;
+                elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
 
-                elfPrecision.GetComponent<Image>().enabled = true;
-                precisionColor = elfPrecision.GetComponent<Image>().color;
-                elfPrecision.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+                if(primaryWeaponToggle == null)
+                    primaryWeaponToggle = GameObject.Find("PrimaryWeaponToggle");
+
+                primaryWeaponToggle.GetComponent<Image>().enabled = true;
+                primaryWeaponToggle.GetComponent<Button>().enabled = true;
+                primaryWeaponToggle.GetComponent<Button>().interactable = false;
+                primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+
+                elfDamageText.enabled = true;
 
                 playerName = "Questor - Elf";
                 break;
@@ -130,42 +148,49 @@ public class ScoundrelGame : MonoBehaviour
 
     void DisableArchSpec()
     {
-        // Warrior
-        if(player == Archetype.Warrior)
-        {
-            if(rageButton == null)
-                rageButton = GameObject.Find("Rage");
+        if(rageButton == null)
+            rageButton = GameObject.Find("Rage");
 
-            rageButton.GetComponent<Button>().enabled = false;
-            rageButton.GetComponent<Image>().enabled = false;
-            rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
-        }
+        rageButton.GetComponent<Button>().enabled = false;
+        rageButton.GetComponent<Image>().enabled = false;
+        rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
 
-        else if(player == Archetype.Elf)
-        {
-            if(elfPrecision == null)
-                elfPrecision = GameObject.Find("Precision");
+        if(elfWeaponButton == null)
+            elfWeaponButton = GameObject.Find("ElfWeapon");
 
-            elfPrecision.GetComponent<Image>().color = precisionColor;
-            elfPrecision.GetComponent<Image>().enabled = false;
-            elfPrecision.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
-        }
+        elfWeaponButton.GetComponent<Image>().enabled = false;
+        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        elfWeaponDamage = 14;
+        elfWeaponVal = 0;
 
-        else if(player == Archetype.Wizard)
-        {
-            if(spellSlot == null)
-                spellSlot = GameObject.Find("SpellSlot");
+        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+        elfWeaponButton.GetComponent<Button>().interactable = false;
+        elfWeaponButton.GetComponent<Image>().color = Color.grey;
+        elfWeaponButton.GetComponent<Button>().enabled = false;
+        elfWeaponButton.GetComponent<WeaponButton>().isReadied = false;
+        elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
 
-            spellSlot.GetComponent<Button>().enabled = false;
-            spellSlot.GetComponent<Image>().enabled = false;
-            spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        primaryWeaponToggle.GetComponent<Image>().enabled = false;
+        primaryWeaponToggle.GetComponent<Button>().enabled = false;
+        primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Right is primary";
+        elfWeaponPrimary = false;
+        elfDamageText.text = "0";
+        elfDamageText.enabled = false;
 
-            weaponButton.GetComponent<Button>().enabled = true;
-            weaponButton.GetComponent<Image>().enabled = true;
-            weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+        if(spellSlot == null)
+            spellSlot = GameObject.Find("SpellSlot");
 
-            damageText.enabled = true;
-        }
+        spellSlot.GetComponent<Button>().enabled = false;
+        spellSlot.GetComponent<Image>().enabled = false;
+        spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+
+        weaponButton.GetComponent<Button>().enabled = true;
+        weaponButton.GetComponent<Image>().enabled = true;
+        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+
+        damageText.enabled = true;
     }
 
     public void CardSelected(CardOnObj cardO)
@@ -200,20 +225,29 @@ public class ScoundrelGame : MonoBehaviour
 
                 if(player == Archetype.Elf)
                 {
-                    elfPrecision.GetComponent<Image>().color = precisionColor;
-                    weaponUsed = false;
+                    // equipping two initial weapons
+                    if(elfWeaponsEquipped.Item2 == false)
+                    {
+                        elfWeaponsEquipped = new Tuple<bool, bool>(false, true);
+                        EquipPrimary(cardO);
+                    }
+
+                    else if(elfWeaponsEquipped.Item1 == false)
+                    {
+                        elfWeaponsEquipped = new Tuple<bool, bool>(true, true);
+                        EquipSecondary(cardO);
+                    }
+
+                    // selecting which to throw away based on which one is not the primary
+                    else if (elfWeaponPrimary) // if the elf weapon is the primary
+                        EquipPrimary(cardO);
+
+                    else if (!elfWeaponPrimary) // if the elf weapon is not the primary
+                        EquipSecondary(cardO);
                 }
+                else
+                    EquipPrimary(cardO);
 
-                weaponVal = cardO.card.value;
-                weaponDamage = 14;
-
-                monstersSlainWithWeapon = new List<Card>();
-
-                weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
-                weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
-                weaponButton.GetComponent<Button>().interactable = true;
-
-                damageText.text = $"{14}";
             }
             else // mana for the wizard
             {
@@ -224,13 +258,6 @@ public class ScoundrelGame : MonoBehaviour
 
                 spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
 
-                // string manaTextColor = "#FFA500";
-
-                // if (UnityEngine.ColorUtility.TryParseHtmlString(manaTextColor, out Color myColor))
-                //     spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().color = myColor; // Apply the color to the button
-
-                
-                //spellSlot.GetComponent<Button>().interactable = true;
             }
         }
 
@@ -242,9 +269,6 @@ public class ScoundrelGame : MonoBehaviour
             else
                 FightMonsterWizard(cardO.card);
         }
-
-
-
 
         // removing card once done with it
         deck.slotsUsed[cardO.card.slotIndex] = false;
@@ -273,7 +297,46 @@ public class ScoundrelGame : MonoBehaviour
             PlayerDeath();
     }
 
+    public void EquipPrimary(CardOnObj cardO)
+    {
+        weaponVal = cardO.card.value;
+        weaponDamage = 14;
 
+        //monstersSlainWithWeapon = new List<Card>();
+
+        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
+        weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
+        weaponButton.GetComponent<Button>().interactable = true;
+
+        damageText.text = $"{14}";
+    }
+
+    public void EquipSecondary(CardOnObj cardO)
+    {
+        elfWeaponVal = cardO.card.value;
+        elfWeaponDamage = 14;
+
+        //monstersSlainWithWeapon = new List<Card>();
+
+        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(elfWeaponVal)}D";
+        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(elfWeaponVal)}D";
+        elfWeaponButton.GetComponent<Button>().interactable = true;
+
+        elfDamageText.text = $"{14}";
+
+
+        primaryWeaponToggle.GetComponent<Button>().interactable = true;
+    }
+
+    public void ChangePrimaryWeap()
+    {
+        elfWeaponPrimary = !elfWeaponPrimary;
+
+        if (elfWeaponPrimary)
+            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is primary";
+        else
+            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Right is primary";
+    }
 
     public void NewRoom()
     {
@@ -325,66 +388,108 @@ public class ScoundrelGame : MonoBehaviour
         NewRoom();
     }
 
-    public void SelectWeaponToggle()
+    public void SelectWeaponToggle(WeaponButton weaponSelected)
     {
-        if(player != Archetype.Wizard){
-            if(weaponButton == null)
-                weaponButton = GameObject.Find("Weapon");
+        Color onColor;
 
-            usingWeapon = !usingWeapon;
-
-            if (usingWeapon)
-                weaponButton.GetComponent<Image>().color = Color.green;
-            else
-                weaponButton.GetComponent<Image>().color = Color.grey;
-        }
+        if(player != Archetype.Wizard)
+            onColor = Color.green;
         else
+            onColor = Color.cyan;
+
+
+        weaponSelected.isReadied = !weaponSelected.isReadied;
+        // Debug.Log(weaponSelected.name);
+        // Debug.Log(weaponSelected.isReadied);
+
+        if(weaponSelected.isReadied)
+            weaponSelected.GetComponent<Image>().color = onColor;
+        else
+            weaponSelected.GetComponent<Image>().color = Color.grey;
+
+        // handles the case where we just clicked the elf weapon to ready it, but the main weapon is also readied
+        if(weaponSelected.isElfWeapon && weaponSelected.isReadied) //&& weaponButton.GetComponent<WeaponButton>().isReadied)
         {
-            if(spellSlot == null)
-                spellSlot = GameObject.Find("SpellSlot");
-
-            usingWeapon = !usingWeapon;
-
-            if (usingWeapon)
-                spellSlot.GetComponent<Image>().color = Color.cyan;
-            else
-                spellSlot.GetComponent<Image>().color = Color.grey;
+            weaponButton.GetComponent<WeaponButton>().isReadied = false;
+            weaponButton.GetComponent<Image>().color = Color.grey;
+        }
+        // handles the case where we just clicked the main weapon to ready it, but the elf weapon is also readied
+        else if(!weaponSelected.isElfWeapon && weaponSelected.isReadied) //&& elfWeaponButton.GetComponent<WeaponButton>().isReadied)
+        {
+            elfWeaponButton.GetComponent<WeaponButton>().isReadied = false;
+            elfWeaponButton.GetComponent<Image>().color = Color.grey;
         }
     }
 
     void FightMonster(Card card)
     {
-        if(!usingWeapon || (weaponDamage <= card.value && weaponDamage != 14))
+        // first val represents if we're using a weapon, second val is what weapon we're using (false for normal weapon, true for elf weapon)
+        Tuple <bool, bool> usingWhichWeapon;
+
+        // find which if either button is readied
+        if(weaponButton.GetComponent<WeaponButton>().isReadied)
+            usingWhichWeapon = new Tuple<bool, bool>(true, false);
+        else if(elfWeaponButton.GetComponent<WeaponButton>().isReadied)
+            usingWhichWeapon = new Tuple<bool, bool>(true, true);
+        else
+            usingWhichWeapon = new Tuple<bool, bool>(false, false);
+
+
+        // use the weapon's information that's selected in the comparisons
+        int weaponDamage;
+        int weaponVal;
+        TMP_Text damageText;
+
+        if(!usingWhichWeapon.Item2)
+        {
+            damageText = this.damageText;
+            weaponDamage = this.weaponDamage;
+            weaponVal = this.weaponVal;
+        }
+        else
+        {
+            damageText = elfDamageText;
+            weaponDamage = elfWeaponDamage;
+            weaponVal = elfWeaponVal;
+        }
+
+        // actual damage logic
+        if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != 14))
             health -= card.value;
-        else if ((usingWeapon && weaponDamage > card.value) || weaponDamage == 14)
+        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || weaponDamage == 14)
         {
             if(card.value - weaponVal > 0)
                 health -= card.value - weaponVal;
 
-            if(player == Archetype.Elf && !weaponUsed)
-            {
-                weaponUsed = true;
-                elfPrecision.GetComponent<Image>().color = new Color(precisionColor.r, precisionColor.g, precisionColor.b, precisionColor.a/2f);
-            }
-            else if(player != Archetype.Elf || weaponUsed)
-            {
-                weaponDamage = card.value;
-            }
-            
+            weaponDamage = card.value;
+
             if(weaponDamage != 14)
                 damageText.text = $"{weaponDamage - 1}";
             else
                 damageText.text = $"{weaponDamage}";
 
-            monstersSlainWithWeapon.Add(card);
+            Debug.Log(damageText.text);
+            monstersSlain.Add(card);
         }
 
         healthText.text = $"Health: {health}/{maxHealth}";
+
+        // giving back the values to the global versions of the variables
+        if(!usingWhichWeapon.Item2)
+        {
+            this.damageText.text = damageText.text;
+            this.weaponDamage = weaponDamage;
+        }
+        else
+        {
+            elfDamageText.text = damageText.text;
+            elfWeaponDamage = weaponDamage;
+        }
     }
 
     void FightMonsterWizard(Card card)
     {
-        if(usingWeapon)
+        if(spellSlot.GetComponent<WeaponButton>().isReadied)
         {
             int difference = card.value - wizardMana;
 
@@ -485,15 +590,16 @@ public class ScoundrelGame : MonoBehaviour
             GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
             GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
 
-            monstersSlainWithWeapon.Clear();
+            monstersSlain.Clear();
 
-            weaponUsed = false;
+            weaponButton.GetComponent<WeaponButton>().isReadied = false;
             winLoseText.enabled = false;
 
             DisableArchSpec();
 
             damageText.text = "0";
             weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+            weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
             weaponButton.GetComponent<Button>().interactable = false;
 
             AudioPlayer.instance.StopMusic();

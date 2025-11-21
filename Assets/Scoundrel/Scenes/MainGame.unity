@@ -2130,12 +2130,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: After the first room, you have the option to skip. When you skip a room,
-    you take all remaining cards from the room and put them on the bottom of the
-    deck. Once you've skipped a room though, you'll have to face the next one completely
-    before you can skip again. If, because of skipping, at the bottom of the deck
-    there are not at least 4 cards remaining you don't have to face them. You only
-    have to clear full rooms
+  m_text: In any room, you have the option to skip. When you skip a room, you take
+    all remaining cards from the room and put them on the bottom of the deck. Once
+    you've skipped a room though, you'll have to face the next one completely before
+    you can skip again. If, because of skipping, at the bottom of the deck there
+    are not at least 4 cards remaining you don't have to face them. You only have
+    to clear full rooms
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
   m_sharedMaterial: {fileID: -7292529300924916405, guid: d7ad5b8e9be977f45900750425070e88, type: 2}
@@ -3173,11 +3173,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4171336723375812600, guid: f491ad1e12f9a934682cfec92e6df207, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 289.05292
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4171336723375812600, guid: f491ad1e12f9a934682cfec92e6df207, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -66.12106
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4171336723375812600, guid: f491ad1e12f9a934682cfec92e6df207, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3369,6 +3369,10 @@ PrefabInstance:
       value: -260
       objectReference: {fileID: 0}
     - target: {fileID: 6937429146800926958, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6937429146800926958, guid: d970b053b2571e543a996e71f5ee24e7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1778650076}
@@ -3476,7 +3480,6 @@ GameObject:
   - component: {fileID: 7962278808111753492}
   - component: {fileID: 5548807742009311807}
   - component: {fileID: 6528961549793150090}
-  - component: {fileID: 7962278808111753493}
   m_Layer: 0
   m_Name: HowToPlayCanvas
   m_TagString: Untagged
@@ -3823,103 +3826,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!82 &7962278808111753493
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4990237462219675089}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 7245897969168831394, guid: 8d488c901bfaf034faee981802f196c5, type: 2}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 67e4bf62b9ac56d40a8378fdd9ba422a, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.084
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &7962278808111753494
 MonoBehaviour:
   m_ObjectHideFlags: 0

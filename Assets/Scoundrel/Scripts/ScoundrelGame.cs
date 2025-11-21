@@ -174,7 +174,7 @@ public class ScoundrelGame : MonoBehaviour
         primaryWeaponToggle.GetComponent<Image>().enabled = false;
         primaryWeaponToggle.GetComponent<Button>().enabled = false;
         primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
-        primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Right is primary";
+        primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is offhand";
         elfWeaponPrimary = false;
         elfDamageText.text = "0";
         elfDamageText.enabled = false;
@@ -333,9 +333,9 @@ public class ScoundrelGame : MonoBehaviour
         elfWeaponPrimary = !elfWeaponPrimary;
 
         if (elfWeaponPrimary)
-            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is primary";
+            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Right is offhand";
         else
-            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Right is primary";
+            primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is offhand";
     }
 
     public void NewRoom()
@@ -601,6 +601,7 @@ public class ScoundrelGame : MonoBehaviour
             weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
             weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
             weaponButton.GetComponent<Button>().interactable = false;
+            weaponButton.GetComponent<Image>().color = Color.grey;
 
             AudioPlayer.instance.StopMusic();
         }

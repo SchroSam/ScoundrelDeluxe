@@ -171,6 +171,14 @@ public class ScoundrelGame : MonoBehaviour
         elfWeaponButton.GetComponent<WeaponButton>().isReadied = false;
         elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
 
+        if(primaryWeaponToggle == null)
+            primaryWeaponToggle = GameObject.Find("PrimaryWeaponToggle");
+        if(elfDamageText == null)
+            elfDamageText = GameObject.Find("ElfDamage").GetComponent<TMP_Text>();
+        if(elfWeaponButton == null)
+            elfWeaponButton = GameObject.Find("ElfWeapon");
+
+
         primaryWeaponToggle.GetComponent<Image>().enabled = false;
         primaryWeaponToggle.GetComponent<Button>().enabled = false;
         primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;

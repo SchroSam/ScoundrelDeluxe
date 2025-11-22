@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public enum Archetype{Knight, Wizard, Elf, Warrior}
@@ -6,9 +7,11 @@ public enum Archetype{Knight, Wizard, Elf, Warrior}
 public class MainMenu : MonoBehaviour
 {
     private GameObject playerManager;
+    private GameObject newGameButton;
 
     void Start()
     {
+        newGameButton = GameObject.Find("NewGameButton");
         playerManager = FindFirstObjectByType<ScoundrelGame>().gameObject;
     }
 
@@ -50,6 +53,7 @@ public class MainMenu : MonoBehaviour
 
         // assign player archetype
         playerManager.GetComponent<ScoundrelGame>().ChooseArch(p);
+        newGameButton.GetComponent<Button>().interactable = true;
     }
 
 }

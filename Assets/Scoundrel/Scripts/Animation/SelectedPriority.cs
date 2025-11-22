@@ -5,7 +5,7 @@ public class SelectedPriority : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       animator.transform.SetSiblingIndex(animator.transform.parent.childCount - 1);
+       animator.transform.SetAsLastSibling();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

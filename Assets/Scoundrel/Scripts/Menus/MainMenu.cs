@@ -8,11 +8,54 @@ public class MainMenu : MonoBehaviour
 {
     private GameObject playerManager;
     private GameObject newGameButton;
+    private GameObject fade;
+    private bool fadeStarted = false;
+    private bool fadeIn = false;
+    public float maxAlpha = 0.5f;
+    private Color fadeColor;
+    public float fadeSpeed = 0.3f;
 
     void Start()
     {
         newGameButton = GameObject.Find("NewGameButton");
         playerManager = FindFirstObjectByType<ScoundrelGame>().gameObject;
+        fade = GameObject.Find("Fade");
+        fadeColor = fade.GetComponent<Image>().color;
+    }
+
+    void FixedUpdate()
+    {
+        if(fadeStarted && fadeIn)
+        {
+            fade.GetComponent<Image>().color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, fade.GetComponent<Image>().color.a + fadeSpeed);
+
+            if(fade.GetComponent<Image>().color.a >= maxAlpha)
+            {
+                fadeStarted = false;
+                fade.GetComponent<Image>().raycastTarget = true;
+            }
+        }
+
+        if(fadeStarted && !fadeIn)
+        {
+            //fade.GetComponent<Image>().color.Equals(Vector4.MoveTowards(new Vector4(fadeColor.r, fadeColor.g, fadeColor.b, fade.GetComponent<Image>().color.a), new Vector4(fadeColor.r, fadeColor.g, fadeColor.b, 0), fadeSpeed));
+            fade.GetComponent<Image>().color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, fade.GetComponent<Image>().color.a - fadeSpeed);
+
+            if(fade.GetComponent<Image>().color.a <= 0)
+            {
+                fadeStarted = false;
+                fade.GetComponent<Image>().raycastTarget = false;
+            }
+        }
+    }
+
+    public void ChangeFade()
+    {
+        if (!fadeStarted)
+        {
+            fadeIn = !fadeIn;
+            fadeStarted = true;
+        }
     }
 
     public void HowToPlay()
@@ -55,5 +98,7 @@ public class MainMenu : MonoBehaviour
         playerManager.GetComponent<ScoundrelGame>().ChooseArch(p);
         newGameButton.GetComponent<Button>().interactable = true;
     }
+
+
 
 }

@@ -211,7 +211,11 @@ public class ScoundrelGame : MonoBehaviour
             foreach(GameObject obj in cardsObj)
             {
                 if(obj.GetComponent<CardOnObj>().card.suit == Suit.Hearts)
+                {
+                    obj.GetComponent<Animator>().enabled = false;
+                    obj.GetComponent<Button>().transition = Selectable.Transition.ColorTint;
                     obj.GetComponent<Image>().color = Color.grey;
+                }
 
             }
             
@@ -371,7 +375,11 @@ public class ScoundrelGame : MonoBehaviour
             foreach(GameObject obj in cardsObj)
             {
                 if(obj.GetComponent<CardOnObj>().card.suit == Suit.Hearts)
+                {
+                    obj.GetComponent<Animator>().enabled = true;
+                    obj.GetComponent<Button>().transition = Selectable.Transition.Animation;
                     obj.GetComponent<Image>().color = Color.white;
+                }
 
             }
 

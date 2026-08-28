@@ -30,6 +30,7 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject rageButton;
     private GameObject spellSlot;
     private TMP_Text winLoseText;
+    private GameObject nextFloorButton;
     private Tuple<bool, bool> elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
     public bool elfWeaponPrimary = false;
     public string winMessage = "Dungeon Cleared - Success";
@@ -53,6 +54,9 @@ public class ScoundrelGame : MonoBehaviour
 
         if(winLoseText == null)
             winLoseText = GameObject.Find("WinLoseText").GetComponent<TMP_Text>();
+
+        if(nextFloorButton == null)
+            nextFloorButton = GameObject.Find("NextFloorButton");
         
         deck.CreateNew52();
         NewRoom();
@@ -93,14 +97,10 @@ public class ScoundrelGame : MonoBehaviour
                 if(spellSlot == null)
                     spellSlot = GameObject.Find("SpellSlot");
 
-                spellSlot.GetComponent<Button>().enabled = true;
-                spellSlot.GetComponent<Image>().enabled = true;
-                spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+                SetButtonActive(spellSlot, true);
                 spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
 
-                weaponButton.GetComponent<Button>().enabled = false;
-                weaponButton.GetComponent<Image>().enabled = false;
-                weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+                SetButtonActive(weaponButton, false);
                 damageText.enabled = false;
 
                 playerName = "Merlin - Wizard";
@@ -111,17 +111,13 @@ public class ScoundrelGame : MonoBehaviour
                 maxHealth -= 5;
                 health -= 5;
 
-                elfWeaponButton.GetComponent<Image>().enabled = true;
-                elfWeaponButton.GetComponent<Button>().enabled = true;
-                elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+                SetButtonActive(elfWeaponButton, true);
 
                 if(primaryWeaponToggle == null)
                     primaryWeaponToggle = GameObject.Find("PrimaryWeaponToggle");
 
-                primaryWeaponToggle.GetComponent<Image>().enabled = true;
-                primaryWeaponToggle.GetComponent<Button>().enabled = true;
+                SetButtonActive(primaryWeaponToggle, true);
                 primaryWeaponToggle.GetComponent<Button>().interactable = false;
-                primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
 
                 elfDamageText.enabled = true;
 
@@ -134,9 +130,7 @@ public class ScoundrelGame : MonoBehaviour
                 if(rageButton == null)
                     rageButton = GameObject.Find("Rage");
 
-                rageButton.GetComponent<Button>().enabled = true;
-                rageButton.GetComponent<Image>().enabled = true;
-                rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+                SetButtonActive(rageButton, true);
 
                 playerName = "Dwalin - Warrior";
                 break;
@@ -151,15 +145,12 @@ public class ScoundrelGame : MonoBehaviour
         if(rageButton == null)
             rageButton = GameObject.Find("Rage");
 
-        rageButton.GetComponent<Button>().enabled = false;
-        rageButton.GetComponent<Image>().enabled = false;
-        rageButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        SetButtonActive(rageButton, false);
 
         if(elfWeaponButton == null)
             elfWeaponButton = GameObject.Find("ElfWeapon");
 
-        elfWeaponButton.GetComponent<Image>().enabled = false;
-        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        SetButtonActive(elfWeaponButton, false);
         elfWeaponDamage = 14;
         elfWeaponVal = 0;
 
@@ -167,7 +158,6 @@ public class ScoundrelGame : MonoBehaviour
         elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
         elfWeaponButton.GetComponent<Button>().interactable = false;
         elfWeaponButton.GetComponent<Image>().color = Color.grey;
-        elfWeaponButton.GetComponent<Button>().enabled = false;
         elfWeaponButton.GetComponent<WeaponButton>().isReadied = false;
         elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
 
@@ -179,9 +169,7 @@ public class ScoundrelGame : MonoBehaviour
             elfWeaponButton = GameObject.Find("ElfWeapon");
 
 
-        primaryWeaponToggle.GetComponent<Image>().enabled = false;
-        primaryWeaponToggle.GetComponent<Button>().enabled = false;
-        primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        SetButtonActive(primaryWeaponToggle, false);
         primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is offhand";
         elfWeaponPrimary = false;
         elfDamageText.text = "0";
@@ -190,13 +178,9 @@ public class ScoundrelGame : MonoBehaviour
         if(spellSlot == null)
             spellSlot = GameObject.Find("SpellSlot");
 
-        spellSlot.GetComponent<Button>().enabled = false;
-        spellSlot.GetComponent<Image>().enabled = false;
-        spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().enabled = false;
+        SetButtonActive(spellSlot, false);
 
-        weaponButton.GetComponent<Button>().enabled = true;
-        weaponButton.GetComponent<Image>().enabled = true;
-        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().enabled = true;
+        SetButtonActive(weaponButton, true);
 
         damageText.enabled = true;
     }
@@ -566,7 +550,21 @@ public class ScoundrelGame : MonoBehaviour
                 button.interactable = false;
         }
 
+        nextFloorButton.GetComponent<Button>().interactable = true;
+
         GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
+
+        // Next floor button
+        SetButtonActive(nextFloorButton, true);
+        // Do cleanup - save health though
+        // full reshuffle deck
+        // 
+    }
+
+    public void NextFloor()
+    {
+        CleanupNewRound();
+        deck.FullShuffle();
     }
 
     void PlayerDeath()
@@ -583,7 +581,7 @@ public class ScoundrelGame : MonoBehaviour
         }
     }
 
-    public void CleanupNewRound()
+    public void CleanupNewRound(bool fullReset = false)
     {
         if(GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled == false)
         {
@@ -593,35 +591,42 @@ public class ScoundrelGame : MonoBehaviour
             {
                 button.interactable = true;
 
-                if(button.tag == "Card")
+                if(button.CompareTag("Card"))
                     Destroy(button.gameObject);
             }
 
-            health = 20;
-            maxHealth = 20;
-
             deck.slotsUsed = new List<bool> {false, false, false, false};
-
-            GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
-            GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
-            GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
-
-            monstersSlain.Clear();
 
             weaponButton.GetComponent<WeaponButton>().isReadied = false;
             winLoseText.enabled = false;
 
-            DisableArchSpec();
-
-            damageText.text = "0";
-            weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
-            weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+            if(fullReset)
+            {
+                GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
+                GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
+                GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+                health = 20;
+                maxHealth = 20;
+                DisableArchSpec();
+                monstersSlain.Clear();
+                damageText.text = "0";
+                weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+                weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+            }
+            
             weaponButton.GetComponent<Button>().interactable = false;
             weaponButton.GetComponent<Image>().color = Color.grey;
 
             AudioPlayer.instance.StopMusic();
         }
 
+    }
+
+    private void SetButtonActive(GameObject button, bool active)
+    {
+        button.GetComponent<Button>().enabled = active;
+        button.GetComponent<Image>().enabled = active;
+        button.transform.GetChild(0).GetComponent<TMP_Text>().enabled = active;
     }
 
 }

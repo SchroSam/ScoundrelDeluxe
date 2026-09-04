@@ -35,6 +35,7 @@ public class ScoundrelGame : MonoBehaviour
     public bool elfWeaponPrimary = false;
     public string winMessage = "Dungeon Cleared - Success";
     public string loseMessage = "You have fallen";
+    public int startingDeckSize = 32;
     void StartGame()
     {
         if(deck == null)
@@ -59,6 +60,7 @@ public class ScoundrelGame : MonoBehaviour
             nextFloorButton = GameObject.Find("NextFloorButton");
         
         deck.CreateNew52();
+        deck.RemoveTopN(52 - startingDeckSize);
         NewRoom();
     }
 
@@ -565,6 +567,8 @@ public class ScoundrelGame : MonoBehaviour
     {
         CleanupNewRound();
         deck.FullShuffle();
+        NewRoom();
+        SetButtonActive(nextFloorButton, false);
     }
 
     void PlayerDeath()
@@ -597,7 +601,7 @@ public class ScoundrelGame : MonoBehaviour
 
             deck.slotsUsed = new List<bool> {false, false, false, false};
 
-            weaponButton.GetComponent<WeaponButton>().isReadied = false;
+            
             winLoseText.enabled = false;
 
             if(fullReset)
@@ -612,12 +616,12 @@ public class ScoundrelGame : MonoBehaviour
                 damageText.text = "0";
                 weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
                 weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+                weaponButton.GetComponent<WeaponButton>().isReadied = false;
+                weaponButton.GetComponent<Button>().interactable = false;
+                weaponButton.GetComponent<Image>().color = Color.grey;
+                AudioPlayer.instance.StopMusic();
             }
             
-            weaponButton.GetComponent<Button>().interactable = false;
-            weaponButton.GetComponent<Image>().color = Color.grey;
-
-            AudioPlayer.instance.StopMusic();
         }
 
     }

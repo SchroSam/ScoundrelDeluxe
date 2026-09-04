@@ -169,20 +169,32 @@ public class Deck : MonoBehaviour
 
     public void CreateNew52()
     {
-        cards = new List<Card>();
+        fullDeck = new List<Card>();
         
 
         for (int i = 1; i <= 4; i++)
         {
             for(int j = 2; j <= 14; j++)
             {
-                cards.Add(new Card((Suit)i, j));
+                fullDeck.Add(new Card((Suit)i, j));
             }
         }
 
 
         transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cards.Count}";
+        cards = new List<Card>(fullDeck);
         Shuffle();
+        
+    }
+
+    // not to be used mid floor!
+    public void RemoveTopN(int n)
+    {
+        for(int i = 0; i < n; i++)
+        {
+            cards.RemoveAt(cards.Count - 1);
+        }
+
         fullDeck = new List<Card>(cards);
     }
 }

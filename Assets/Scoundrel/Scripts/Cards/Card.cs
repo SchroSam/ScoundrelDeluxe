@@ -47,7 +47,7 @@ public class Card
         }
     }
 
-    public string valToString()
+    public string ValToString()
     {
         switch (value)
         {
@@ -69,7 +69,7 @@ public class Card
 
     }
 
-    public static string valToString(int val)
+    public static string ValToString(int val)
     {
         switch (val)
         {

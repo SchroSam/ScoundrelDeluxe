@@ -55,9 +55,9 @@ public class Deck : MonoBehaviour
         cardSpawn.transform.GetComponent<CardOnObj>().card.suit = cardInfo.suit;
         cardSpawn.transform.GetComponent<CardOnObj>().card.value = cardInfo.value;
         cardSpawn.transform.GetComponent<CardOnObj>().card.slotIndex = index;
-        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.valToString()}{cardInfo.SuitString()}";
-        cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.valToString()}{cardInfo.SuitString()}";
-        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.valToString()}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
         if(cardInfo.suit == Suit.Hearts || cardInfo.suit == Suit.Diamonds)
         {
             cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().color = Color.red;

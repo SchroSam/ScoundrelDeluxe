@@ -36,6 +36,8 @@ public class ScoundrelGame : MonoBehaviour
     public string winMessage = "Dungeon Cleared - Success";
     public string loseMessage = "You have fallen";
     public int startingDeckSize = 32;
+    public int floornum = 1;
+    public int monstersPerFloor = 3;
     void StartGame()
     {
         if(deck == null)
@@ -302,8 +304,8 @@ public class ScoundrelGame : MonoBehaviour
 
         //monstersSlainWithWeapon = new List<Card>();
 
-        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
-        weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(weaponVal)}D";
+        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.ValToString(weaponVal)}D";
+        weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(weaponVal)}D";
         weaponButton.GetComponent<Button>().interactable = true;
 
         damageText.text = $"{14}";
@@ -316,8 +318,8 @@ public class ScoundrelGame : MonoBehaviour
 
         //monstersSlainWithWeapon = new List<Card>();
 
-        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.valToString(elfWeaponVal)}D";
-        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.valToString(elfWeaponVal)}D";
+        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.ValToString(elfWeaponVal)}D";
+        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(elfWeaponVal)}D";
         elfWeaponButton.GetComponent<Button>().interactable = true;
 
         elfDamageText.text = $"{14}";
@@ -556,19 +558,34 @@ public class ScoundrelGame : MonoBehaviour
 
         GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
 
-        // Next floor button
         SetButtonActive(nextFloorButton, true);
-        // Do cleanup - save health though
-        // full reshuffle deck
-        // 
     }
 
     public void NextFloor()
     {
         CleanupNewRound();
+        AddRandMonsters();
         deck.FullShuffle();
         NewRoom();
         SetButtonActive(nextFloorButton, false);
+        floornum++;
+    }
+
+    public void AddRandMonsters()
+    {
+        Card monster;
+
+        for(int i = 0; i < monstersPerFloor; i++)
+        {
+            monster = new Card
+            {
+                suit = UnityEngine.Random.Range(0, 2) == 0 ? Suit.Clubs : Suit.Spades,
+
+                value = UnityEngine.Random.Range(5, 11) + floornum
+            };
+
+            Deck.fullDeck.Add(monster);
+        }
     }
 
     void PlayerDeath()

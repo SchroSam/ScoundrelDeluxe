@@ -37,8 +37,8 @@ public class AudioPlayer : MonoBehaviour
         {
             musicClips = new List<Sound>
             {
-                new Sound(Resources.Load<AudioClip>("Audio/Music/Bard-Instructions")),
-                new Sound(Resources.Load<AudioClip>("Audio/Music/Final Fantasy 7 Boss battle"))
+                new Sound(Resources.Load<AudioClip>("Audio/Music/08 - Shop")),
+                new Sound(Resources.Load<AudioClip>("Audio/Music/09 - Battle 2"))
             };
 
             instance = this;

@@ -62,7 +62,7 @@ public class MainMenu : MonoBehaviour
     {
         GetComponent<Canvas>().enabled = false;
         GameObject.Find("HowToPlayCanvas").GetComponent<Canvas>().enabled = true;
-        AudioPlayer.instance.PlayMusic("Bard-Instructions");
+        AudioPlayer.instance.PlayMusic("08 - Shop");
     }
 
     public void Knight()
@@ -91,7 +91,7 @@ public class MainMenu : MonoBehaviour
         GetComponent<Canvas>().enabled = false;
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
         //GameObject.Find("GameCanvas").GetComponent<AudioSource>().Play();
-        AudioPlayer.instance.PlayMusic("Final Fantasy 7 Boss battle");
+        AudioPlayer.instance.PlayMusic("09 - Battle 2");
         
 
         // assign player archetype

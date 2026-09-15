@@ -91,7 +91,7 @@ public class MainMenu : MonoBehaviour
         GetComponent<Canvas>().enabled = false;
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
         //GameObject.Find("GameCanvas").GetComponent<AudioSource>().Play();
-        AudioPlayer.instance.PlayMusic("09 - Battle 2");
+        AudioPlayer.instance.PlayMusic(AudioPlayer.instance.musicClips[Random.Range(1, 5)].clip.name);
         
 
         // assign player archetype

@@ -25,7 +25,7 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Music")]
     public AudioSource musicSource;
-    private List<Sound> musicClips;
+    public List<Sound> musicClips;
 
     [Header("SFX")]
     public AudioSource sfxSource;
@@ -38,7 +38,11 @@ public class AudioPlayer : MonoBehaviour
             musicClips = new List<Sound>
             {
                 new Sound(Resources.Load<AudioClip>("Audio/Music/08 - Shop")),
-                new Sound(Resources.Load<AudioClip>("Audio/Music/09 - Battle 2"))
+                new Sound(Resources.Load<AudioClip>("Audio/Music/09 - Battle 2")),
+                new Sound(Resources.Load<AudioClip>("Audio/Music/05 - Battle 1")),
+                new Sound(Resources.Load<AudioClip>("Audio/Music/13 - Decisive Battle 1 - Don't Be Afraid")),
+                new Sound(Resources.Load<AudioClip>("Audio/Music/17 - Decisive Battle 2 - The Calamity"))
+
             };
 
             instance = this;

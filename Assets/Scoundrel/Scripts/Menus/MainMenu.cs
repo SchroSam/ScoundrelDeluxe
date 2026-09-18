@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
 {
     private GameObject playerManager;
     private GameObject newGameButton;
+    private GameObject howToPlayCanvas;
     private GameObject fade;
     private bool fadeStarted = false;
     private bool fadeIn = false;
@@ -17,6 +18,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        howToPlayCanvas = GameObject.Find("HowToPlayCanvas");
         newGameButton = GameObject.Find("NewGameButton");
         playerManager = FindFirstObjectByType<ScoundrelGame>().gameObject;
         fade = GameObject.Find("Fade");
@@ -61,7 +63,8 @@ public class MainMenu : MonoBehaviour
     public void HowToPlay()
     {
         GetComponent<Canvas>().enabled = false;
-        GameObject.Find("HowToPlayCanvas").GetComponent<Canvas>().enabled = true;
+        howToPlayCanvas.GetComponent<Canvas>().enabled = true;
+        howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
         AudioPlayer.instance.PlayMusic("08 - Shop");
     }
 

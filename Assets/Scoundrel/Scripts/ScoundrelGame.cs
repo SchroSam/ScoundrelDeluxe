@@ -11,6 +11,7 @@ public class ScoundrelGame : MonoBehaviour
     public int weaponVal = 0;
     public int elfWeaponVal = 0;
     private int weaponDamage = 14;
+    private int maxDamage = 14;
     public int elfWeaponDamage = 14;
     //public bool usingWeapon = false;
     private int wizardMana = 0;
@@ -300,7 +301,7 @@ public class ScoundrelGame : MonoBehaviour
     public void EquipPrimary(CardOnObj cardO)
     {
         weaponVal = cardO.card.value;
-        weaponDamage = 14;
+        weaponDamage = maxDamage;
 
         //monstersSlainWithWeapon = new List<Card>();
 
@@ -308,13 +309,13 @@ public class ScoundrelGame : MonoBehaviour
         weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(weaponVal)}D";
         weaponButton.GetComponent<Button>().interactable = true;
 
-        damageText.text = $"{14}";
+        damageText.text = $"{maxDamage}";
     }
 
     public void EquipSecondary(CardOnObj cardO)
     {
         elfWeaponVal = cardO.card.value;
-        elfWeaponDamage = 14;
+        elfWeaponDamage = maxDamage;
 
         //monstersSlainWithWeapon = new List<Card>();
 
@@ -322,7 +323,7 @@ public class ScoundrelGame : MonoBehaviour
         elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(elfWeaponVal)}D";
         elfWeaponButton.GetComponent<Button>().interactable = true;
 
-        elfDamageText.text = $"{14}";
+        elfDamageText.text = $"{maxDamage}";
 
 
         primaryWeaponToggle.GetComponent<Button>().interactable = true;
@@ -458,16 +459,16 @@ public class ScoundrelGame : MonoBehaviour
         }
 
         // actual damage logic
-        if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != 14))
+        if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
             health -= card.value;
-        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == 14)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
+        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == maxDamage)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
         {
             if(card.value - weaponVal > 0)
                 health -= card.value - weaponVal;
 
             weaponDamage = card.value;
 
-            if(weaponDamage != 14)
+            if(weaponDamage != maxDamage)
                 damageText.text = $"{weaponDamage - 1}";
             else
                 damageText.text = $"{weaponDamage}";
@@ -569,6 +570,9 @@ public class ScoundrelGame : MonoBehaviour
         NewRoom();
         SetButtonActive(nextFloorButton, false);
         floornum++;
+
+        if(player == Archetype.Warrior)
+            rageButton.GetComponent<Button>().interactable = true;
     }
 
     public void AddRandMonsters()
@@ -583,6 +587,9 @@ public class ScoundrelGame : MonoBehaviour
 
                 value = UnityEngine.Random.Range(5, 11) + floornum
             };
+
+            if(monster.value >= maxDamage)
+                maxDamage = monster.value;
 
             Deck.fullDeck.Add(monster);
         }

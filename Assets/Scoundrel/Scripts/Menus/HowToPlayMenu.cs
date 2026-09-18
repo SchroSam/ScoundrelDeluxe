@@ -15,6 +15,14 @@ public class HowToPlayMenu : MonoBehaviour
         tutorialSlide.sprite = tutorialSlides[0];
     }
 
+    public void ResetSlides()
+    {
+        index = 0;
+        tutorialSlide.sprite = tutorialSlides[0];
+        backwardButton.interactable = false;
+        forwardButton.interactable = true;
+    }
+
     public void ReturnToStart()
     {
         GetComponent<Canvas>().enabled = false;
@@ -27,7 +35,7 @@ public class HowToPlayMenu : MonoBehaviour
     {
         tutorialSlide.sprite = tutorialSlides[++index];
         
-        if(index >= tutorialSlides.Count)
+        if(index >= tutorialSlides.Count - 1)
             forwardButton.interactable = false;
 
         backwardButton.interactable = true;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,8 +8,9 @@ public class ShopScreen : MonoBehaviour
 {
     private ScoundrelGame gm;
     public TMP_Text goldText;
-    public List<GameObject> items = new List<GameObject>();
-    private List<ShopItem> itemStats = new List<ShopItem>();
+    public int minimumRoll = 4;
+    public List<GameObject> items = new();
+    private List<ShopItem> itemStats = new();
 
     public void Start()
     {
@@ -24,7 +26,11 @@ public class ShopScreen : MonoBehaviour
         {
             ItemType type = (ItemType)Random.Range(0, 4);
 
-            float itemRoll = Random.Range(8, 16 + gm.floornum);
+            float itemRoll = Random.Range(minimumRoll, minimumRoll*2 + gm.floornum);
+
+            itemStats.Add(new ShopItem());
+
+            itemStats[i].type = type;
 
             itemStats[i].value = (int)itemRoll;
 
@@ -35,17 +41,24 @@ public class ShopScreen : MonoBehaviour
                 break;
 
                 case ItemType.Attack:
-                    itemStats[i].strength = (int)(itemRoll / 2);
+                    itemStats[i].strength = (int)(itemRoll / 4);
+                    itemStats[i].value *= 2;
                 break;
 
                 case ItemType.PotionCard:
-                    itemStats[i].strength = (int)(itemRoll / 1.5f);
+                    itemStats[i].strength = (int)(itemRoll * 1.5);
                 break;
 
                 case ItemType.WeaponCard:
-                    itemStats[i].strength = (int)itemRoll;
+                    itemStats[i].strength = (int)(itemRoll * 1.5);
                 break;
             }
+
+            if(itemStats[i].strength <= 0)
+                itemStats[i].strength = 1;
+
+            items[i].transform.GetChild(0).GetComponent<TMP_Text>().text = DescribeItem(itemStats[i]);
+            items[i].GetComponent<Button>().interactable = true;
         }
     }
 
@@ -54,16 +67,16 @@ public class ShopScreen : MonoBehaviour
         switch (item.type)
         {
             case ItemType.Health:
-                return $"A fortifying draught which increases your max health by {item.strength}. Worth {item.value} gold.";
+                return $"A fortifying draught which increases your max health by {item.strength}.\n\nWorth {item.value} gold.";
 
             case ItemType.Attack:
-                return $"A magic charm which grants a passive +{item.strength} damage to all attacks. Worth {item.value} gold.";
+                return $"A magic charm which grants a passive +{item.strength} damage to all attacks.\n\nWorth {item.value} gold.";
 
             case ItemType.PotionCard:
-                return $"Adds a potion card of strength {item.strength} to the deck permanently. Worth {item.value} gold.";
+                return $"Adds a potion card of strength {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
 
             case ItemType.WeaponCard:
-                return $"Add a weapon card of strength {item.strength} to the deck permanently. Worth {item.value} gold.";
+                return $"Add a weapon card of strength {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
         }
 
         return "ERROR DESCRIPTION";
@@ -101,6 +114,18 @@ public class ShopScreen : MonoBehaviour
                 Deck.fullDeck.Add(new Card(Suit.Diamonds, item.value));
             break;
         }
+    }
+
+    public void NextFloorButton()
+    {
+        GetComponent<Canvas>().enabled = false;
+        gm.NewRoom();
+        AudioPlayer.instance.StopMusic();
+        AudioPlayer.instance.PlayMusic(AudioPlayer.instance.musicClips[Random.Range(1, 5)].clip.name);
+        gm.healthText.text = $"Health: {gm.health}/{gm.maxHealth}";
+        if(gm.attackModifier > 0)
+            GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = $"Attack Modifier: +{gm.attackModifier}";
+        GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
     }
 }
 

@@ -19,7 +19,7 @@ public class ScoundrelGame : MonoBehaviour
     public Archetype player;
     private List<Card> monstersSlain;
     public Deck deck;
-    private TMP_Text healthText;
+    public TMP_Text healthText;
     private TMP_Text damageText;
     private TMP_Text elfDamageText;
     private GameObject weaponButton;
@@ -31,7 +31,7 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject rageButton;
     private GameObject spellSlot;
     private TMP_Text winLoseText;
-    private GameObject nextFloorButton;
+    private GameObject shopButton;
     private Tuple<bool, bool> elfWeaponsEquipped = new Tuple<bool, bool>(false, false);
     public bool elfWeaponPrimary = false;
     public string winMessage = "Dungeon Cleared - Success";
@@ -62,8 +62,8 @@ public class ScoundrelGame : MonoBehaviour
         if(winLoseText == null)
             winLoseText = GameObject.Find("WinLoseText").GetComponent<TMP_Text>();
 
-        if(nextFloorButton == null)
-            nextFloorButton = GameObject.Find("NextFloorButton");
+        if(shopButton == null)
+            shopButton = GameObject.Find("NextFloorButton");
 
         if(shop == null)
             shop = FindFirstObjectByType<ShopScreen>();
@@ -466,10 +466,15 @@ public class ScoundrelGame : MonoBehaviour
 
         // actual damage logic
         if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
-            health -= card.value - attackModifier;
+        {
+            int damage = card.value - attackModifier;
+
+            if (damage > 0)
+                health -= damage;
+        }
         else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == maxDamage)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
         {
-            if(card.value - weaponVal > 0)
+            if(card.value - attackModifier - weaponVal > 0)
                 health -= card.value - attackModifier - weaponVal;
 
             weaponDamage = card.value;
@@ -561,27 +566,27 @@ public class ScoundrelGame : MonoBehaviour
                 button.interactable = false;
         }
 
-        nextFloorButton.GetComponent<Button>().interactable = true;
+        shopButton.GetComponent<Button>().interactable = true;
 
         GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
 
-        SetButtonActive(nextFloorButton, true);
+        SetButtonActive(shopButton, true);
 
         for(int i = 0; i < monstersSlain.Count; i++)
         {
-            gold += monstersSlain[i].value / 2;
+            gold += monstersSlain[i].value / 8;
         }
 
         monstersSlain.Clear();
     }
 
-    public void NextFloor()
+    public void NextShop()
     {
         CleanupNewRound();
         AddRandMonsters();
         deck.FullShuffle();
         // NewRoom();
-        // SetButtonActive(nextFloorButton, false);
+        SetButtonActive(shopButton, false);
         floornum++;
 
         if(player == Archetype.Warrior)
@@ -670,6 +675,7 @@ public class ScoundrelGame : MonoBehaviour
                 AudioPlayer.instance.StopMusic();
                 attackModifier = 0;
                 gold = 0;
+                GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = "";
             }
             
         }

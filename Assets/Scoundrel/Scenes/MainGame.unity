@@ -5061,6 +5061,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e3fb6ddec16193c4f92ce5832d721bfa, type: 3}
   - {fileID: 21300000, guid: 0d20d313ae1676d42aac1abb3ce5c06b, type: 3}
   - {fileID: 21300000, guid: aee18a496c47bd44e97a50463dde4560, type: 3}
+  - {fileID: 21300000, guid: aee18a496c47bd44e97a50463dde4560, type: 3}
+  - {fileID: 21300000, guid: 4139f3b8b247d504c86511776f90df6f, type: 3}
   forwardButton: {fileID: 1923867917}
   backwardButton: {fileID: 640700716}
 --- !u!1660057539 &9223372036854775807

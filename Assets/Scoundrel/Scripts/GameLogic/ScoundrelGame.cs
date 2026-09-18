@@ -18,7 +18,7 @@ public class ScoundrelGame : MonoBehaviour
     private int wizardMaxMana = 15;
     public Archetype player;
     private List<Card> monstersSlain;
-    private Deck deck;
+    public Deck deck;
     private TMP_Text healthText;
     private TMP_Text damageText;
     private TMP_Text elfDamageText;
@@ -39,6 +39,9 @@ public class ScoundrelGame : MonoBehaviour
     public int startingDeckSize = 32;
     public int floornum = 1;
     public int monstersPerFloor = 3;
+    public int attackModifier = 0;
+    public ShopScreen shop;
+    public int gold;
     void StartGame()
     {
         if(deck == null)
@@ -61,6 +64,9 @@ public class ScoundrelGame : MonoBehaviour
 
         if(nextFloorButton == null)
             nextFloorButton = GameObject.Find("NextFloorButton");
+
+        if(shop == null)
+            shop = FindFirstObjectByType<ShopScreen>();
         
         deck.CreateNew52();
         deck.RemoveTopN(52 - startingDeckSize);
@@ -460,11 +466,11 @@ public class ScoundrelGame : MonoBehaviour
 
         // actual damage logic
         if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
-            health -= card.value;
+            health -= card.value - attackModifier;
         else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == maxDamage)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
         {
             if(card.value - weaponVal > 0)
-                health -= card.value - weaponVal;
+                health -= card.value - attackModifier - weaponVal;
 
             weaponDamage = card.value;
 
@@ -560,6 +566,13 @@ public class ScoundrelGame : MonoBehaviour
         GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
 
         SetButtonActive(nextFloorButton, true);
+
+        for(int i = 0; i < monstersSlain.Count; i++)
+        {
+            gold += monstersSlain[i].value / 2;
+        }
+
+        monstersSlain.Clear();
     }
 
     public void NextFloor()
@@ -567,12 +580,14 @@ public class ScoundrelGame : MonoBehaviour
         CleanupNewRound();
         AddRandMonsters();
         deck.FullShuffle();
-        NewRoom();
-        SetButtonActive(nextFloorButton, false);
+        // NewRoom();
+        // SetButtonActive(nextFloorButton, false);
         floornum++;
 
         if(player == Archetype.Warrior)
             rageButton.GetComponent<Button>().interactable = true;
+
+        StartShop();
     }
 
     public void AddRandMonsters()
@@ -593,6 +608,15 @@ public class ScoundrelGame : MonoBehaviour
 
             Deck.fullDeck.Add(monster);
         }
+    }
+
+    public void StartShop()
+    {
+        AudioPlayer.instance.StopMusic();
+        GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
+        shop.GenerateItems();
+        GameObject.Find("ShopCanvas").GetComponent<Canvas>().enabled = true;
+        
     }
 
     void PlayerDeath()
@@ -644,6 +668,8 @@ public class ScoundrelGame : MonoBehaviour
                 weaponButton.GetComponent<Button>().interactable = false;
                 weaponButton.GetComponent<Image>().color = Color.grey;
                 AudioPlayer.instance.StopMusic();
+                attackModifier = 0;
+                gold = 0;
             }
             
         }

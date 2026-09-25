@@ -6,7 +6,6 @@ public enum Archetype{Knight, Wizard, Elf, Warrior}
 
 public class MainMenu : MonoBehaviour
 {
-    private GameObject playerManager;
     private GameObject newGameButton;
     private GameObject howToPlayCanvas;
 
@@ -14,7 +13,6 @@ public class MainMenu : MonoBehaviour
     {
         howToPlayCanvas = GameObject.Find("HowToPlayCanvas");
         newGameButton = GameObject.Find("NewGameButton");
-        playerManager = FindFirstObjectByType<ScoundrelGame>().gameObject;
     }
 
     public void HowToPlay()
@@ -55,7 +53,7 @@ public class MainMenu : MonoBehaviour
         
 
         // assign player archetype
-        playerManager.GetComponent<ScoundrelGame>().ChooseArch(p);
+        ScoundrelGame.instance.ChooseArch(p);
         newGameButton.GetComponent<Button>().interactable = true;
     }
 

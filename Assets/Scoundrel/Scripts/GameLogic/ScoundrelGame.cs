@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ScoundrelGame : MonoBehaviour
 {
+    public static ScoundrelGame instance;    
     public int health = 20;
     public int maxHealth = 20;
     public int weaponVal = 0;
@@ -42,6 +43,19 @@ public class ScoundrelGame : MonoBehaviour
     public int attackModifier = 0;
     public ShopScreen shop;
     public int gold;
+
+    void Awake()
+    {
+        // wow singleton!
+
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+            Destroy(this);
+    }
     void StartGame()
     {
         if(deck == null)

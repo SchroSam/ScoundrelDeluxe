@@ -29,6 +29,9 @@ public class CommandPattern : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.D))
             ExecuteMoveCommand(Vector3.right * moveDistance);
+
+        if(Input.GetKeyDown(KeyCode.P))
+            ScoreManager.instance.AddScore(5.0f);
     }
 
     public void Undo()

@@ -6,27 +6,22 @@ using UnityEngine.UI;
 
 public class ShopScreen : MonoBehaviour
 {
-    private ScoundrelGame gm;
     public TMP_Text goldText;
     public int minimumRoll = 4;
     public List<GameObject> items = new();
     private List<ShopItem> itemStats = new();
 
-    public void Start()
-    {
-        gm = FindFirstObjectByType<ScoundrelGame>();
-    }
 
     public void GenerateItems()
     {
         itemStats = new List<ShopItem>();
-        goldText.text = $"Gold: {gm.gold}";
+        goldText.text = $"Gold: {ScoundrelGame.instance.gold}";
 
         for(int i = 0; i < 4; i++)
         {
             ItemType type = (ItemType)Random.Range(0, 4);
 
-            float itemRoll = Random.Range(minimumRoll, minimumRoll*2 + gm.floornum);
+            float itemRoll = Random.Range(minimumRoll, minimumRoll*2 + ScoundrelGame.instance.floornum);
 
             itemStats.Add(new ShopItem());
 
@@ -84,10 +79,10 @@ public class ShopScreen : MonoBehaviour
 
     public void ItemButton(int index)
     {
-        if(gm.gold >= itemStats[index].value)
+        if(ScoundrelGame.instance.gold >= itemStats[index].value)
         {
-            gm.gold -= itemStats[index].value;
-            goldText.text = $"Gold: {gm.gold}";
+            ScoundrelGame.instance.gold -= itemStats[index].value;
+            goldText.text = $"Gold: {ScoundrelGame.instance.gold}";
             GiveItem(itemStats[index]);
             items[index].GetComponent<Button>().interactable = false;
         }
@@ -98,12 +93,12 @@ public class ShopScreen : MonoBehaviour
         switch (item.type)
         {
             case ItemType.Health:
-                gm.maxHealth += item.value;
-                gm.health += item.value;
+                ScoundrelGame.instance.maxHealth += item.value;
+                ScoundrelGame.instance.health += item.value;
             break;
 
             case ItemType.Attack:
-                gm.attackModifier += item.value;
+                ScoundrelGame.instance.attackModifier += item.value;
             break;
 
             case ItemType.PotionCard:
@@ -119,12 +114,12 @@ public class ShopScreen : MonoBehaviour
     public void NextFloorButton()
     {
         GetComponent<Canvas>().enabled = false;
-        gm.NewRoom();
+        ScoundrelGame.instance.NewRoom();
         AudioPlayer.instance.StopMusic();
         AudioPlayer.instance.PlayMusic(AudioPlayer.instance.musicClips[Random.Range(1, 5)].clip.name);
-        gm.healthText.text = $"Health: {gm.health}/{gm.maxHealth}";
-        if(gm.attackModifier > 0)
-            GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = $"Attack Modifier: +{gm.attackModifier}";
+        ScoundrelGame.instance.healthText.text = $"Health: {ScoundrelGame.instance.health}/{ScoundrelGame.instance.maxHealth}";
+        if(ScoundrelGame.instance.attackModifier > 0)
+            GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = $"Attack Modifier: +{ScoundrelGame.instance.attackModifier}";
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
     }
 }

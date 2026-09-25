@@ -81,7 +81,7 @@ public class Deck : MonoBehaviour
                 break;
 
             case Suit.Diamonds:
-                if(FindFirstObjectByType<ScoundrelGame>().player != Archetype.Wizard)
+                if(ScoundrelGame.instance.player != Archetype.Wizard)
                     obj.GetComponent<Image>().sprite = smallDiamonds;
                 else
                     obj.GetComponent<Image>().sprite = manaGem;

@@ -1,8 +1,10 @@
-[System.Serializable]
+using System;
+
+[Serializable]
 public enum Suit{Hearts = 1, Diamonds, Clubs, Spades,}
 
-[System.Serializable]
-public class Card
+[Serializable]
+public class Card : IComparable
 {
     public Suit suit;
     public int value;
@@ -27,7 +29,8 @@ public class Card
 
     public string SuitString()
     {
-        switch(suit){
+        switch(suit)
+        {
             
             case Suit.Hearts:
                 return "H";
@@ -90,5 +93,17 @@ public class Card
         }
     }
 
+    // CompareTo function for sorting based on value
+    public int CompareTo(object obj)
+    {
+        if(obj == null) return 1;
+
+        Card otherCard = obj as Card;
+
+        if(otherCard != null)
+            return value.CompareTo(otherCard.value);
+        else
+            throw new ArgumentException("Object is not a Card");
+    }
 
 }

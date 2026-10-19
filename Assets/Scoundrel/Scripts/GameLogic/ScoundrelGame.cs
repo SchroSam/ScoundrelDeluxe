@@ -627,6 +627,8 @@ public class ScoundrelGame : MonoBehaviour
 
             Deck.fullDeck.Add(monster);
         }
+
+        Deck.fullDeck.Sort();
     }
 
     public void StartShop()

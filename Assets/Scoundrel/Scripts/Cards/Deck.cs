@@ -76,13 +76,25 @@ public class Deck : MonoBehaviour
         transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cards.Count}";
     }
 
-    void calcTopPercentile(Suit suit, int value)
+    // Percentage of the deck with a value greater than or equal to this card's value.
+    float CalcTopPercentile(int value)
     {
-        
+        int cardsGreaterOrEqual = 0;
+        for (int i = fullDeck.Count - 1; i >= 0; i--)
+        {
+            if (fullDeck[i].value >= value)
+                cardsGreaterOrEqual++;
+            else
+                break;
+        }
+
+        return fullDeck.Count == 0 ? 0f : cardsGreaterOrEqual * 100f / fullDeck.Count;
     }
 
     void GiveCardArt(GameObject obj, Suit suit, int value)
     {
+        float perc = CalcTopPercentile(value);
+
         switch (suit)
         {
             case Suit.Hearts:
@@ -97,25 +109,33 @@ public class Deck : MonoBehaviour
                 break;
 
             case Suit.Clubs:
-                if(value < 6)
+                if (perc > 61.54f) // 2 through 6
                     obj.GetComponent<Image>().sprite = smallClubs;
-                else if(value < 11)
+                else if (perc > 30.77f) // 7 through 10
                     obj.GetComponent<Image>().sprite = midClubs;
-
-                
-                else if(value == 14)
+                // else if (perc > 23.08f) // 11
+                //     obj.GetComponent<Image>().sprite = jackClubs;
+                // else if (perc > 15.38f) // 12
+                //     obj.GetComponent<Image>().sprite = queenClubs;
+                // else if (perc > 7.69f) // 13
+                //     obj.GetComponent<Image>().sprite = kingClubs;
+                else // 14
                     obj.GetComponent<Image>().sprite = aceClubs;
 
                 break;
 
             case Suit.Spades:
-                if(value < 6)
+                if (perc > 61.54f) // 2 through 6
                     obj.GetComponent<Image>().sprite = smallSpades;
-
-                else if(value < 11)
+                else if (perc > 30.77f) // 7 through 10
                     obj.GetComponent<Image>().sprite = midSpades;
-
-                else if(value == 14)
+                // else if (perc > 23.08f) // 11
+                //     obj.GetComponent<Image>().sprite = jackSpades;
+                // else if (perc > 15.38f) // 12
+                //     obj.GetComponent<Image>().sprite = queenSpades;
+                // else if (perc > 7.69f) // 13
+                //     obj.GetComponent<Image>().sprite = kingSpades;
+                else // 14
                     obj.GetComponent<Image>().sprite = aceSpades;
 
                 break;
@@ -193,6 +213,8 @@ public class Deck : MonoBehaviour
 
         transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cards.Count}";
         cards = new List<Card>(fullDeck);
+
+        fullDeck.Sort();
         Shuffle();
         
     }
@@ -206,6 +228,7 @@ public class Deck : MonoBehaviour
         }
 
         fullDeck = new List<Card>(cards);
+        fullDeck.Sort();
     }
 }
 

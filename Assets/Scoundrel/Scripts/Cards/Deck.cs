@@ -19,12 +19,16 @@ public class Deck : MonoBehaviour
 
     public Sprite smallClubs;
     public Sprite midClubs;
-
+    public Sprite jackClubs;
+    public Sprite queenClubs;
+    public Sprite kingClubs;
     public Sprite aceClubs;
 
     public Sprite smallSpades;
     public Sprite midSpades;
-
+    public Sprite jackSpades;
+    public Sprite queenSpades;
+    public Sprite kingSpades;
     public Sprite aceSpades;
 
     public Sprite manaGem;
@@ -64,7 +68,7 @@ public class Deck : MonoBehaviour
             cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().color = Color.red;
         }
         
-        giveCardArt(cardSpawn, cardInfo.suit, cardInfo.value);
+        GiveCardArt(cardSpawn, cardInfo.suit, cardInfo.value);
 
 
 
@@ -72,7 +76,12 @@ public class Deck : MonoBehaviour
         transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cards.Count}";
     }
 
-    void giveCardArt(GameObject obj, Suit suit, int value)
+    void calcTopPercentile(Suit suit, int value)
+    {
+        
+    }
+
+    void GiveCardArt(GameObject obj, Suit suit, int value)
     {
         switch (suit)
         {
@@ -93,6 +102,7 @@ public class Deck : MonoBehaviour
                 else if(value < 11)
                     obj.GetComponent<Image>().sprite = midClubs;
 
+                
                 else if(value == 14)
                     obj.GetComponent<Image>().sprite = aceClubs;
 

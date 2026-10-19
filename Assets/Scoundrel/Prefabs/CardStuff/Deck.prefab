@@ -211,10 +211,17 @@ MonoBehaviour:
   smallDiamonds: {fileID: 21300000, guid: f5710d569996de146ad1ecbe65099d7b, type: 3}
   smallClubs: {fileID: 0}
   midClubs: {fileID: 0}
+  jackClubs: {fileID: 21300000, guid: 0de3fa32fc92a60499e98672ed21986c, type: 3}
+  queenClubs: {fileID: 0}
+  kingClubs: {fileID: 0}
   aceClubs: {fileID: 0}
   smallSpades: {fileID: 21300000, guid: 361837d0ff91dc945a70d153e046ee99, type: 3}
   midSpades: {fileID: 0}
+  jackSpades: {fileID: 0}
+  queenSpades: {fileID: 0}
+  kingSpades: {fileID: 0}
   aceSpades: {fileID: 0}
+  manaGem: {fileID: 0}
 --- !u!1 &7393170461848003251
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +325,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

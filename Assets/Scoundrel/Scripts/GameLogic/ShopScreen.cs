@@ -111,7 +111,7 @@ public class ShopScreen : MonoBehaviour
                 return $"Enchanted boots which allow the user to skip past one additional room. \n\nWorth {value} gold.";
 
             case Archetype.Warrior:
-                return $"A talisman which restores the warrior's rage whenever he reaches 7 or less health. \n\nWorth {value} gold.";
+                return $"A talisman which restores the warrior's rage whenever he reaches 5 or less health (or adds 2 to this limit if already taken). \n\nWorth {value} gold.";
         }
             
         
@@ -154,18 +154,26 @@ public class ShopScreen : MonoBehaviour
                 switch (ScoundrelGame.instance.player)
                 {
                     case Archetype.Knight:
-                    
+                    ScoundrelGame.instance.potionLimit++;
+
                     break;
 
                     case Archetype.Wizard:
+                    ScoundrelGame.instance.SetButtonActive(ScoundrelGame.instance.fireBallButton, true);
 
                     break;
 
                     case Archetype.Elf:
+                    ScoundrelGame.instance.skipLimit++;
 
                     break;
 
                     case Archetype.Warrior:
+                    
+                    if(ScoundrelGame.instance.rageRecovery == 0)
+                        ScoundrelGame.instance.rageRecovery = 5;
+                    else
+                        ScoundrelGame.instance.rageRecovery += 2;
 
                     break;
                 }

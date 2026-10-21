@@ -11,6 +11,7 @@ public class Deck : MonoBehaviour
     public static List<Card> fullDeck;
     public List<RectTransform> slotPositions;
     public List<bool> slotsUsed = new List<bool> {false, false, false, false};
+    public List<GameObject> cardsOnBoard = new List<GameObject> {null, null, null, null};
     public bool done = false; //FIX?
 
     public Sprite smallHearts;
@@ -59,6 +60,7 @@ public class Deck : MonoBehaviour
         cardSpawn.transform.GetComponent<CardOnObj>().card.suit = cardInfo.suit;
         cardSpawn.transform.GetComponent<CardOnObj>().card.value = cardInfo.value;
         cardSpawn.transform.GetComponent<CardOnObj>().card.slotIndex = index;
+        cardsOnBoard[index] = cardSpawn;
         cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
         cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
         cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";

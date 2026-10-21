@@ -17,6 +17,10 @@ public class ScoundrelGame : MonoBehaviour
     //public bool usingWeapon = false;
     private int wizardMana = 0;
     private int wizardMaxMana = 15;
+    public int potionLimit = 1;
+    public GameObject fireBallButton;
+    public int skipLimit = 1;
+    public int rageRecovery = 0;
     public Archetype player;
     private List<Card> monstersSlain;
     public Deck deck;
@@ -28,7 +32,9 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject primaryWeaponToggle;
     private GameObject skipButton;
     private string playerName = "Scott";
-    private bool noPotThisRoom = true;
+    // private bool noPotThisRoom = true;
+    private int potsTakenThisRoom = 0;
+    private int skipsInARow = 0;
     private GameObject rageButton;
     private GameObject spellSlot;
     private TMP_Text winLoseText;
@@ -213,23 +219,29 @@ public class ScoundrelGame : MonoBehaviour
     public void CardSelected(CardOnObj cardO)
     {
         // healing potions
-        if(cardO.card.suit == Suit.Hearts && noPotThisRoom)
+        if(cardO.card.suit == Suit.Hearts && potionLimit < potsTakenThisRoom)
         {
-            GameObject[] cardsObj = GameObject.FindGameObjectsWithTag("Card");
+            potsTakenThisRoom++;
 
-            foreach(GameObject obj in cardsObj)
+            if(potsTakenThisRoom >= potionLimit)
             {
-                if(obj.GetComponent<CardOnObj>().card.suit == Suit.Hearts)
-                {
-                    obj.GetComponent<Animator>().enabled = false;
-                    obj.GetComponent<Button>().transition = Selectable.Transition.ColorTint;
-                    obj.GetComponent<Image>().color = Color.grey;
-                }
-
-            }
             
+                GameObject[] cardsObj = GameObject.FindGameObjectsWithTag("Card");
 
-            noPotThisRoom = false;
+                foreach(GameObject obj in cardsObj)
+                {
+                    if(obj.GetComponent<CardOnObj>().card.suit == Suit.Hearts)
+                    {
+                        obj.GetComponent<Animator>().enabled = false;
+                        obj.GetComponent<Button>().transition = Selectable.Transition.ColorTint;
+                        obj.GetComponent<Image>().color = Color.grey;
+                    }
+
+                }
+            
+            }
+
+            //noPotThisRoom = false;
             health += cardO.card.value;
 
             //Debug.Log($"halth > maxHealth is: {health > maxHealth}");
@@ -287,12 +299,16 @@ public class ScoundrelGame : MonoBehaviour
         {
             if(player != Archetype.Wizard)
                 FightMonster(cardO.card);
+            else if(fireBallButton.GetComponent<WeaponButton>().isReadied)
+                FightMonsterFireball(cardO.card);
             else
                 FightMonsterWizard(cardO.card);
+            
         }
 
         // removing card once done with it
         deck.slotsUsed[cardO.card.slotIndex] = false;
+        deck.cardsOnBoard[cardO.card.slotIndex] = null;
 
         Destroy(cardO.gameObject);
 
@@ -359,8 +375,11 @@ public class ScoundrelGame : MonoBehaviour
             primaryWeaponToggle.transform.GetChild(0).GetComponent<TMP_Text>().text = "Left is offhand";
     }
 
-    public void NewRoom()
+    public void NewRoom(bool skipped = false)
     {
+
+        if(!skipped)
+            skipsInARow = 0;
 
         int numSpotsFilled = 4;
 
@@ -377,7 +396,8 @@ public class ScoundrelGame : MonoBehaviour
         }
 
         else{
-            noPotThisRoom = true;
+            //noPotThisRoom = true;
+            potsTakenThisRoom = 0;
 
             GameObject[] cardsObj = GameObject.FindGameObjectsWithTag("Card");
 
@@ -398,7 +418,10 @@ public class ScoundrelGame : MonoBehaviour
 
     public void SkipRoom()
     {
-        skipButton.GetComponent<Button>().interactable = false;
+        skipsInARow++;
+
+        if(skipsInARow >= skipLimit)
+            skipButton.GetComponent<Button>().interactable = false;
 
         //I HAVE NO IDEA WHAT'S MESSING UP SKIP ON FIRST ROUND
         //deck.done = false;
@@ -410,7 +433,7 @@ public class ScoundrelGame : MonoBehaviour
 
         
 
-        NewRoom();
+        NewRoom(true);
     }
 
     public void SelectWeaponToggle(WeaponButton weaponSelected)
@@ -478,6 +501,8 @@ public class ScoundrelGame : MonoBehaviour
             weaponVal = elfWeaponVal;
         }
 
+        int startingHealth = health;
+
         // actual damage logic
         if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
         {
@@ -503,6 +528,9 @@ public class ScoundrelGame : MonoBehaviour
         }
 
         healthText.text = $"Health: {health}/{maxHealth}";
+
+        if(startingHealth > rageRecovery && health <= rageRecovery)
+            rageButton.GetComponent<Button>().interactable = true;
 
         // giving back the values to the global versions of the variables
         if(!usingWhichWeapon.Item2)
@@ -539,6 +567,58 @@ public class ScoundrelGame : MonoBehaviour
         healthText.text = $"Health: {health}/{maxHealth}";
     }
 
+    void FightMonsterFireball(Card card)
+    {
+        bool leftMonster = false;
+        bool rightMonster = false;
+
+
+        if(card.slotIndex - 1 != -1 && deck.cardsOnBoard[card.slotIndex - 1] != null && (deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.suit == Suit.Clubs || deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.suit == Suit.Spades))
+            leftMonster = true;
+        if(card.slotIndex + 1 != 4 && deck.cardsOnBoard[card.slotIndex + 1] != null && (deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.suit == Suit.Clubs || deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.suit == Suit.Spades))
+            rightMonster = true;
+
+        Card biggestMonster = card;
+
+        if(leftMonster)
+        {
+            if(deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
+                biggestMonster = deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card;
+        }
+        if(rightMonster)
+        {
+            if(deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
+                biggestMonster = deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card;
+        }
+
+        int difference = biggestMonster.value - wizardMana;
+
+        if(difference > 0)
+            health -= difference;
+
+        wizardMana -= card.value;
+
+        if(wizardMana < 0)
+            wizardMana = 0;
+
+        spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
+
+        healthText.text = $"Health: {health}/{maxHealth}";
+
+        if (leftMonster)
+        {
+            deck.slotsUsed[card.slotIndex - 1] = false;
+            Destroy(deck.cardsOnBoard[card.slotIndex - 1]);
+            deck.cardsOnBoard[card.slotIndex - 1] = null;
+        }
+        if (rightMonster)
+        {
+            deck.slotsUsed[card.slotIndex + 1] = false;
+            Destroy(deck.cardsOnBoard[card.slotIndex + 1]);
+            deck.cardsOnBoard[card.slotIndex + 1] = null;
+        }
+    }
+
     public void Rage()
     {
         int numSpotsFilled = 4;
@@ -560,12 +640,14 @@ public class ScoundrelGame : MonoBehaviour
 
             deck.slotsUsed = new List<bool> {false, false, false, false};
 
-            GameObject.Find("Rage").GetComponent<Button>().interactable = false;
+            rageButton.GetComponent<Button>().interactable = false;
 
             deck.FillSpots();
 
         }
     }
+
+    
 
     void WinRound()
     {
@@ -669,6 +751,7 @@ public class ScoundrelGame : MonoBehaviour
             }
 
             deck.slotsUsed = new List<bool> {false, false, false, false};
+            deck.cardsOnBoard = new List<GameObject> {null, null, null, null};
 
             
             winLoseText.enabled = false;
@@ -692,13 +775,18 @@ public class ScoundrelGame : MonoBehaviour
                 attackModifier = 0;
                 gold = 0;
                 GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = "";
+                potionLimit = 1;
+                SetButtonActive(fireBallButton, false);
+                fireBallButton.GetComponent<WeaponButton>().isReadied = false;
+                skipLimit = 1;
+                rageRecovery = 0;
             }
             
         }
 
     }
 
-    private void SetButtonActive(GameObject button, bool active)
+    public void SetButtonActive(GameObject button, bool active)
     {
         button.GetComponent<Button>().enabled = active;
         button.GetComponent<Image>().enabled = active;

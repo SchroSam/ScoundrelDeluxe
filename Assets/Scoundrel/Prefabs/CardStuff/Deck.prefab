@@ -212,14 +212,14 @@ MonoBehaviour:
   smallClubs: {fileID: 0}
   midClubs: {fileID: 0}
   jackClubs: {fileID: 21300000, guid: 0de3fa32fc92a60499e98672ed21986c, type: 3}
-  queenClubs: {fileID: 0}
-  kingClubs: {fileID: 0}
+  queenClubs: {fileID: 21300000, guid: aba030c1fd942634f831dd8da274c652, type: 3}
+  kingClubs: {fileID: 21300000, guid: 75d55cd20960978439e4d3e79d438512, type: 3}
   aceClubs: {fileID: 0}
   smallSpades: {fileID: 21300000, guid: 361837d0ff91dc945a70d153e046ee99, type: 3}
   midSpades: {fileID: 0}
-  jackSpades: {fileID: 0}
-  queenSpades: {fileID: 0}
-  kingSpades: {fileID: 0}
+  jackSpades: {fileID: 21300000, guid: 9e32db0c408bab941af23fb88be0cd65, type: 3}
+  queenSpades: {fileID: 21300000, guid: 7db962d1e4547b3439d3b672e78155f4, type: 3}
+  kingSpades: {fileID: 21300000, guid: e049bf5e637d1e14eb67ce15246c2070, type: 3}
   aceSpades: {fileID: 0}
   manaGem: {fileID: 0}
 --- !u!1 &7393170461848003251

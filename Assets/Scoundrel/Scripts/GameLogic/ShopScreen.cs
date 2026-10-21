@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +18,21 @@ public class ShopScreen : MonoBehaviour
 
         for(int i = 0; i < 4; i++)
         {
-            ItemType type = (ItemType)Random.Range(0, 4);
+            float temp = Random.Range(0.0f, 10.0f);
+
+            ItemType type; //= (ItemType)Random.Range(0, 5);
+
+            if(temp < 3.0f)
+                type = ItemType.Health;
+            else if (temp < 5.0f)
+                type = ItemType.Attack;
+            else if (temp < 7.0f)
+                type = ItemType.PotionCard;
+            else if (temp < 9.0f)
+                type = ItemType.WeaponCard;
+            else
+                type = ItemType.Special;
+
 
             float itemRoll = Random.Range(minimumRoll, minimumRoll*2 + ScoundrelGame.instance.floornum);
 
@@ -47,6 +60,10 @@ public class ShopScreen : MonoBehaviour
                 case ItemType.WeaponCard:
                     itemStats[i].strength = (int)(itemRoll * 1.5);
                 break;
+
+                case ItemType.Special:
+                    itemStats[i].value = 25;
+                break;
             }
 
             if(itemStats[i].strength <= 0)
@@ -72,9 +89,33 @@ public class ShopScreen : MonoBehaviour
 
             case ItemType.WeaponCard:
                 return $"Add a weapon card of strength {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
+
+            case ItemType.Special:
+                return GetSpecialDescription(item.value);
         }
 
         return "ERROR DESCRIPTION";
+    }
+
+    public string GetSpecialDescription(int value)
+    {
+        switch (ScoundrelGame.instance.player)
+        {
+            case Archetype.Knight:
+                return $"A magic charm that lets you drink one more potion per room before becoming sick. \n\nWorth {value} gold.";
+
+            case Archetype.Wizard:
+                return $"A disposable fireball scroll which damages the selected and adjacent enemeis. \n\nWorth {value} gold.";
+
+            case Archetype.Elf:
+                return $"Enchanted boots which allow the user to skip past one additional room. \n\nWorth {value} gold.";
+
+            case Archetype.Warrior:
+                return $"A talisman which restores the warrior's rage whenever he reaches 7 or less health. \n\nWorth {value} gold.";
+        }
+            
+        
+        return "ERROR SPECIAL";
     }
 
     public void ItemButton(int index)
@@ -108,6 +149,27 @@ public class ShopScreen : MonoBehaviour
             case ItemType.WeaponCard:
                 Deck.fullDeck.Add(new Card(Suit.Diamonds, item.value));
             break;
+
+            case ItemType.Special:
+                switch (ScoundrelGame.instance.player)
+                {
+                    case Archetype.Knight:
+                    
+                    break;
+
+                    case Archetype.Wizard:
+
+                    break;
+
+                    case Archetype.Elf:
+
+                    break;
+
+                    case Archetype.Warrior:
+
+                    break;
+                }
+            break;
         }
     }
 
@@ -124,7 +186,19 @@ public class ShopScreen : MonoBehaviour
     }
 }
 
-public enum ItemType{Health, Attack, PotionCard, WeaponCard}
+/*
+ideas for cool items:
+
+Knight: can drink 1 more potion before potions are disabled
+
+Wizard: consumable Fireball that hits adjacent enemies
+
+Elf: Nimble boots - can skip twice in a row
+
+Warrior: Every time you go to 7 or less health, your rage is turned back on
+*/
+
+public enum ItemType{Health, Attack, PotionCard, WeaponCard, Special}
 
 public class ShopItem
 {

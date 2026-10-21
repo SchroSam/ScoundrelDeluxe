@@ -325,8 +325,8 @@ public class ScoundrelGame : MonoBehaviour
 
         //monstersSlainWithWeapon = new List<Card>();
 
-        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.ValToString(weaponVal)}D";
-        weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(weaponVal)}D";
+        weaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{weaponVal}D";
+        weaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{weaponVal}D";
         weaponButton.GetComponent<Button>().interactable = true;
 
         damageText.text = $"{maxDamage}";
@@ -339,8 +339,8 @@ public class ScoundrelGame : MonoBehaviour
 
         //monstersSlainWithWeapon = new List<Card>();
 
-        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{Card.ValToString(elfWeaponVal)}D";
-        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{Card.ValToString(elfWeaponVal)}D";
+        elfWeaponButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{elfWeaponVal}D";
+        elfWeaponButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{elfWeaponVal}D";
         elfWeaponButton.GetComponent<Button>().interactable = true;
 
         elfDamageText.text = $"{maxDamage}";

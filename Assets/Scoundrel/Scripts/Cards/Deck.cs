@@ -59,9 +59,9 @@ public class Deck : MonoBehaviour
         cardSpawn.transform.GetComponent<CardOnObj>().card.suit = cardInfo.suit;
         cardSpawn.transform.GetComponent<CardOnObj>().card.value = cardInfo.value;
         cardSpawn.transform.GetComponent<CardOnObj>().card.slotIndex = index;
-        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
-        cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
-        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.ValToString()}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
+        cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
         if(cardInfo.suit == Suit.Hearts || cardInfo.suit == Suit.Diamonds)
         {
             cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().color = Color.red;
@@ -113,12 +113,12 @@ public class Deck : MonoBehaviour
                     obj.GetComponent<Image>().sprite = smallClubs;
                 else if (perc > 30.77f) // 7 through 10
                     obj.GetComponent<Image>().sprite = midClubs;
-                // else if (perc > 23.08f) // 11
-                //     obj.GetComponent<Image>().sprite = jackClubs;
-                // else if (perc > 15.38f) // 12
-                //     obj.GetComponent<Image>().sprite = queenClubs;
-                // else if (perc > 7.69f) // 13
-                //     obj.GetComponent<Image>().sprite = kingClubs;
+                else if (perc > 23.08f) // 11
+                    obj.GetComponent<Image>().sprite = jackClubs;
+                else if (perc > 15.38f) // 12
+                    obj.GetComponent<Image>().sprite = queenClubs;
+                else if (perc > 7.69f) // 13
+                    obj.GetComponent<Image>().sprite = kingClubs;
                 else // 14
                     obj.GetComponent<Image>().sprite = aceClubs;
 
@@ -129,12 +129,12 @@ public class Deck : MonoBehaviour
                     obj.GetComponent<Image>().sprite = smallSpades;
                 else if (perc > 30.77f) // 7 through 10
                     obj.GetComponent<Image>().sprite = midSpades;
-                // else if (perc > 23.08f) // 11
-                //     obj.GetComponent<Image>().sprite = jackSpades;
-                // else if (perc > 15.38f) // 12
-                //     obj.GetComponent<Image>().sprite = queenSpades;
-                // else if (perc > 7.69f) // 13
-                //     obj.GetComponent<Image>().sprite = kingSpades;
+                else if (perc > 23.08f) // 11
+                    obj.GetComponent<Image>().sprite = jackSpades;
+                else if (perc > 15.38f) // 12
+                    obj.GetComponent<Image>().sprite = queenSpades;
+                else if (perc > 7.69f) // 13
+                    obj.GetComponent<Image>().sprite = kingSpades;
                 else // 14
                     obj.GetComponent<Image>().sprite = aceSpades;
 

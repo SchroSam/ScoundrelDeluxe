@@ -1,0 +1,3 @@
+[submodule "Assets/SchrodsUtils"]
+	path = Assets/SchrodsUtils
+	url = https://github.com/SchroSam/SchrodsUtils.git

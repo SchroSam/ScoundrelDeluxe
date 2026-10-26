@@ -62,7 +62,7 @@ public class ShopScreen : MonoBehaviour
                 break;
 
                 case ItemType.Special:
-                    itemStats[i].value = 25;
+                    itemStats[i].value = 15;
                 break;
             }
 
@@ -105,7 +105,7 @@ public class ShopScreen : MonoBehaviour
                 return $"A magic charm that lets you drink one more potion per room before becoming sick. \n\nWorth {value} gold.";
 
             case Archetype.Wizard:
-                return $"A disposable fireball scroll which damages the selected and adjacent enemeis. \n\nWorth {value} gold.";
+                return $"A disposable fireball scroll which destroys the selected and adjacent enemeis. \n\nWorth {value} gold.";
 
             case Archetype.Elf:
                 return $"Enchanted boots which allow the user to skip past one additional room. \n\nWorth {value} gold.";

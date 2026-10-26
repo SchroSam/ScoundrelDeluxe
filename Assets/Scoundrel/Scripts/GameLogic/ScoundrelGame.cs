@@ -219,9 +219,11 @@ public class ScoundrelGame : MonoBehaviour
     public void CardSelected(CardOnObj cardO)
     {
         // healing potions
-        if(cardO.card.suit == Suit.Hearts && potionLimit < potsTakenThisRoom)
+        if(cardO.card.suit == Suit.Hearts && potionLimit > potsTakenThisRoom)
         {
             potsTakenThisRoom++;
+
+            Debug.LogWarning("Potion taken!");
 
             if(potsTakenThisRoom >= potionLimit)
             {
@@ -243,6 +245,7 @@ public class ScoundrelGame : MonoBehaviour
 
             //noPotThisRoom = false;
             health += cardO.card.value;
+
 
             //Debug.Log($"halth > maxHealth is: {health > maxHealth}");
             if(health > maxHealth)
@@ -300,7 +303,10 @@ public class ScoundrelGame : MonoBehaviour
             if(player != Archetype.Wizard)
                 FightMonster(cardO.card);
             else if(fireBallButton.GetComponent<WeaponButton>().isReadied)
+            {
                 FightMonsterFireball(cardO.card);
+                SetButtonActive(fireBallButton, false);
+            }
             else
                 FightMonsterWizard(cardO.card);
             
@@ -442,6 +448,8 @@ public class ScoundrelGame : MonoBehaviour
 
         if(player != Archetype.Wizard)
             onColor = Color.green;
+        else if(weaponSelected.isFireBall)
+            onColor = Color.red;
         else
             onColor = Color.cyan;
 
@@ -529,7 +537,7 @@ public class ScoundrelGame : MonoBehaviour
 
         healthText.text = $"Health: {health}/{maxHealth}";
 
-        if(startingHealth > rageRecovery && health <= rageRecovery)
+        if(player == Archetype.Warrior && startingHealth > rageRecovery && health <= rageRecovery)
             rageButton.GetComponent<Button>().interactable = true;
 
         // giving back the values to the global versions of the variables
@@ -564,6 +572,7 @@ public class ScoundrelGame : MonoBehaviour
         else
             health -= card.value;
 
+        monstersSlain.Add(card);
         healthText.text = $"Health: {health}/{maxHealth}";
     }
 
@@ -578,23 +587,25 @@ public class ScoundrelGame : MonoBehaviour
         if(card.slotIndex + 1 != 4 && deck.cardsOnBoard[card.slotIndex + 1] != null && (deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.suit == Suit.Clubs || deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.suit == Suit.Spades))
             rightMonster = true;
 
-        Card biggestMonster = card;
+        // Card biggestMonster = card;
 
-        if(leftMonster)
-        {
-            if(deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
-                biggestMonster = deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card;
-        }
-        if(rightMonster)
-        {
-            if(deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
-                biggestMonster = deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card;
-        }
+        // if(leftMonster)
+        // {
+        //     if(deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
+        //         biggestMonster = deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card;
+        // }
+        // if(rightMonster)
+        // {
+        //     if(deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card.value > biggestMonster.value)
+        //         biggestMonster = deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card;
+        // }
 
-        int difference = biggestMonster.value - wizardMana;
+        // int difference = biggestMonster.value - wizardMana;
 
-        if(difference > 0)
-            health -= difference;
+        // if(difference > 0)
+        //     health -= difference;
+
+        health -= card.value;
 
         wizardMana -= card.value;
 
@@ -607,16 +618,22 @@ public class ScoundrelGame : MonoBehaviour
 
         if (leftMonster)
         {
+            monstersSlain.Add(deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card);
             deck.slotsUsed[card.slotIndex - 1] = false;
             Destroy(deck.cardsOnBoard[card.slotIndex - 1]);
             deck.cardsOnBoard[card.slotIndex - 1] = null;
         }
         if (rightMonster)
         {
+            monstersSlain.Add(deck.cardsOnBoard[card.slotIndex + 1].GetComponent<CardOnObj>().card);
             deck.slotsUsed[card.slotIndex + 1] = false;
             Destroy(deck.cardsOnBoard[card.slotIndex + 1]);
             deck.cardsOnBoard[card.slotIndex + 1] = null;
         }
+
+        monstersSlain.Add(card);
+
+        SelectWeaponToggle(fireBallButton.GetComponent<WeaponButton>());
     }
 
     public void Rage()
@@ -791,6 +808,16 @@ public class ScoundrelGame : MonoBehaviour
         button.GetComponent<Button>().enabled = active;
         button.GetComponent<Image>().enabled = active;
         button.transform.GetChild(0).GetComponent<TMP_Text>().enabled = active;
+    }
+
+    // DEBUG BUTTONS
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftBracket))
+        {
+            gold += 1000;
+            WinRound();
+        }
     }
 
 }

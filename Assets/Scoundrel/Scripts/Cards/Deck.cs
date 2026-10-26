@@ -232,6 +232,19 @@ public class Deck : MonoBehaviour
         fullDeck = new List<Card>(cards);
         fullDeck.Sort();
     }
+
+    public int FindGreatestMonster()
+    {
+        fullDeck.Sort();
+
+        for(int i = fullDeck.Count; i >= 0; i--)
+        {
+            if(fullDeck[i].suit == Suit.Clubs || fullDeck[i].suit == Suit.Spades)
+                return fullDeck[i].value;
+        }
+
+        return 0;
+    }
 }
 
 

@@ -29,7 +29,6 @@ public class CardOnObj : MonoBehaviour,
 
     public void RotateTowardMouse(PointerEventData eventData)
     {
-        Debug.LogWarning("Func called");
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             rectTransform,

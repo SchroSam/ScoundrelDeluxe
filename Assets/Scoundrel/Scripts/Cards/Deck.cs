@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
 
 // the top of the deck is the last element in cards
 public class Deck : MonoBehaviour
@@ -12,10 +13,7 @@ public class Deck : MonoBehaviour
     public List<RectTransform> slotPositions;
     public List<bool> slotsUsed = new List<bool> {false, false, false, false};
     public List<GameObject> cardsOnBoard = new List<GameObject> {null, null, null, null};
-    public bool done = false; //FIX?
-
     public Sprite smallHearts;
-
     public Sprite smallDiamonds;
 
     public Sprite smallClubs;
@@ -34,16 +32,7 @@ public class Deck : MonoBehaviour
 
     public Sprite manaGem;
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    // void Start()
-    // {
-    //     //CreateNew52();
-    //     transform.GetChild(0).GetComponent<TMP_Text>().text = $"{fullDeck.Count}";
-    // }
-
-    public void FlipTop(RectTransform spot, int index)
+    public Sequence FlipTop(RectTransform spot, int index)
     {
         // handle ending in game logic
         // if(cards.Count == 0)
@@ -53,9 +42,19 @@ public class Deck : MonoBehaviour
 
         cards.RemoveAt(cards.Count - 1);
 
+        // Instantiate on top of the deck, then arc over to the spot.
+        // They are not interactable until they get done animating
 
-        GameObject cardSpawn = Instantiate(cardPrefab, spot.position, Quaternion.identity, spot.parent);
+        //GameObject cardSpawn = Instantiate(cardPrefab, spot.position, Quaternion.identity, spot.parent);
+        GameObject cardSpawn = Instantiate(cardPrefab, transform.position, Quaternion.Euler(90f, 0f, 0f), spot.parent);
+        Quaternion startRotation = cardSpawn.transform.localRotation;
+        cardSpawn.transform.localRotation = startRotation * Quaternion.Euler(180f, 0f, 0f);
 
+        Sequence sq = DOTween.Sequence();
+        sq.TogglePause();
+        sq.Append(cardSpawn.transform.DOJump(spot.position, 100.0f, 1, 0.5f)
+        .Join(cardSpawn.transform.DOLocalRotateQuaternion(startRotation, 0.5f))
+        .OnComplete(()=> cardSpawn.GetComponent<Button>().interactable = true));
         
         cardSpawn.transform.GetComponent<CardOnObj>().card.suit = cardInfo.suit;
         cardSpawn.transform.GetComponent<CardOnObj>().card.value = cardInfo.value;
@@ -76,6 +75,8 @@ public class Deck : MonoBehaviour
 
         cardSpawn.transform.localScale = Vector3.one * 0.9f;
         transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cards.Count}";
+
+        return sq;
     }
 
     // Percentage of the deck with a value greater than or equal to this card's value.
@@ -147,6 +148,8 @@ public class Deck : MonoBehaviour
 
     public void FillSpots()
     {
+        Sequence sq = DOTween.Sequence();
+        sq.TogglePause();
         //Debug.Log($"FillSpots called - cards.Count: {cards.Count}, slotsUsed: {string.Join(",", slotsUsed)}");
         for (int i = 0; i < slotPositions.Count; i++)
         {
@@ -154,9 +157,12 @@ public class Deck : MonoBehaviour
                 slotsUsed[i] = true;
                 //Debug.Log($"Filling slot {i} - cards remaining: {cards.Count}");
 
-                FlipTop(slotPositions[i], i);
+                sq.Append(FlipTop(slotPositions[i], i));
+                //sq.AppendInterval(0.1f);
             }                
         }
+
+        sq.PlayForward();
 
         GameObject.Find("Progress").GetComponent<Slider>().value = 1 - ((float)cards.Count/fullDeck.Count);
     }

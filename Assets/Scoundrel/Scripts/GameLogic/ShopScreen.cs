@@ -134,7 +134,7 @@ public class ShopScreen : MonoBehaviour
         switch (item.type)
         {
             case ItemType.Health:
-                ScoundrelGame.instance.maxHealth += item.value;
+                ScoundrelGame.instance.maxHealth += item.strength;
                 ScoundrelGame.instance.health += item.value;
             break;
 

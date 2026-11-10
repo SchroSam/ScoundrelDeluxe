@@ -126,7 +126,10 @@ public class Deck : MonoBehaviour
                 break;
 
                 case Suit.Diamonds:
-                instance.SetTexture("_BaseTexture", smallDiamonds.texture);
+                if(ScoundrelGame.instance.player != Archetype.Wizard)
+                    instance.SetTexture("_BaseTexture", smallDiamonds.texture);
+                else
+                    instance.SetTexture("_BaseTexture", manaGem.texture);
                 break;
 
                 case Suit.Clubs:

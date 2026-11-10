@@ -206,7 +206,11 @@ MonoBehaviour:
   - {fileID: 1974184393491747136}
   - {fileID: 3648118114166445853}
   slotsUsed: 00000000
-  done: 0
+  cardsOnBoard:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   smallHearts: {fileID: 21300000, guid: 8ca22adc3e90b1d4e9b15802af10a1cb, type: 3}
   smallDiamonds: {fileID: 21300000, guid: f5710d569996de146ad1ecbe65099d7b, type: 3}
   smallClubs: {fileID: 0}
@@ -222,6 +226,7 @@ MonoBehaviour:
   kingSpades: {fileID: 21300000, guid: e049bf5e637d1e14eb67ce15246c2070, type: 3}
   aceSpades: {fileID: 0}
   manaGem: {fileID: 0}
+  foilMat: {fileID: 2100000, guid: 048d6c5c323615b4c98da790607386f0, type: 2}
 --- !u!1 &7393170461848003251
 GameObject:
   m_ObjectHideFlags: 0

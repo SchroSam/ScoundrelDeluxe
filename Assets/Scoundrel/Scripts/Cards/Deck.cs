@@ -31,6 +31,7 @@ public class Deck : MonoBehaviour
     public Sprite aceSpades;
 
     public Sprite manaGem;
+    public Material foilMat;
 
     public Sequence FlipTop(RectTransform spot, int index)
     {
@@ -52,7 +53,7 @@ public class Deck : MonoBehaviour
 
         Sequence sq = DOTween.Sequence();
         sq.TogglePause();
-        sq.Append(cardSpawn.transform.DOJump(spot.position, 100.0f, 1, 0.5f)
+        sq.Append(cardSpawn.transform.DOJump(spot.position, 50.0f, 1, 0.5f)
         .Join(cardSpawn.transform.DOLocalRotateQuaternion(startRotation, 0.5f))
         .OnComplete(()=> cardSpawn.GetComponent<Button>().interactable = true));
         
@@ -98,51 +99,98 @@ public class Deck : MonoBehaviour
     {
         float perc = CalcTopPercentile(value);
 
-        switch (suit)
+
+
+        Image image = obj.GetComponent<Image>();
+
+        if(perc < 7.69f)
+            image.material = foilMat;
+
+        Material instance = new Material(image.material);
+
+
+        if(perc < 7.69f)
         {
-            case Suit.Hearts:
-                obj.GetComponent<Image>().sprite = smallHearts;
+            instance.SetTextureScale("_BaseTexture", Vector2.one);
+            instance.SetTextureOffset("_BaseTexture", Vector2.zero);
+            instance.SetFloat("_Holo_Offset", Random.Range(0.0f, 100.0f));
+            instance.SetVector("_Holo_Direction", new Vector4(Random.Range(1.0f, 2.0f), Random.Range(1.0f, 2.0f)));
+
+            image.material = instance;
+            image.type = Image.Type.Simple;
+
+            switch (suit)
+            {
+                case Suit.Hearts:
+                instance.SetTexture("_BaseTexture", smallHearts.texture);
                 break;
 
-            case Suit.Diamonds:
-                if(ScoundrelGame.instance.player != Archetype.Wizard)
-                    obj.GetComponent<Image>().sprite = smallDiamonds;
-                else
-                    obj.GetComponent<Image>().sprite = manaGem;
+                case Suit.Diamonds:
+                instance.SetTexture("_BaseTexture", smallDiamonds.texture);
                 break;
 
-            case Suit.Clubs:
-                if (perc > 61.54f) // 2 through 6
-                    obj.GetComponent<Image>().sprite = smallClubs;
-                else if (perc > 30.77f) // 7 through 10
-                    obj.GetComponent<Image>().sprite = midClubs;
-                else if (perc > 23.08f) // 11
-                    obj.GetComponent<Image>().sprite = jackClubs;
-                else if (perc > 15.38f) // 12
-                    obj.GetComponent<Image>().sprite = queenClubs;
-                else if (perc > 7.69f) // 13
-                    obj.GetComponent<Image>().sprite = kingClubs;
-                else // 14
-                    obj.GetComponent<Image>().sprite = aceClubs;
-
+                case Suit.Clubs:
+                instance.SetTexture("_BaseTexture", aceClubs.texture);
                 break;
 
-            case Suit.Spades:
-                if (perc > 61.54f) // 2 through 6
-                    obj.GetComponent<Image>().sprite = smallSpades;
-                else if (perc > 30.77f) // 7 through 10
-                    obj.GetComponent<Image>().sprite = midSpades;
-                else if (perc > 23.08f) // 11
-                    obj.GetComponent<Image>().sprite = jackSpades;
-                else if (perc > 15.38f) // 12
-                    obj.GetComponent<Image>().sprite = queenSpades;
-                else if (perc > 7.69f) // 13
-                    obj.GetComponent<Image>().sprite = kingSpades;
-                else // 14
-                    obj.GetComponent<Image>().sprite = aceSpades;
-
+                case Suit.Spades:
+                instance.SetTexture("_BaseTexture", aceSpades.texture);
                 break;
+            }
+        }
+        else
+        {
 
+            switch (suit)
+            {
+                case Suit.Hearts:
+                    //instance.SetTexture("_BaseTexture", smallHearts.texture);
+                    obj.GetComponent<Image>().sprite = smallHearts;
+                    break;
+
+                case Suit.Diamonds:
+                    if(ScoundrelGame.instance.player != Archetype.Wizard)
+                        obj.GetComponent<Image>().sprite = smallDiamonds;
+                    else
+                        obj.GetComponent<Image>().sprite = manaGem;
+                    break;
+
+                case Suit.Clubs:
+                    if (perc > 61.54f) // 2 through 6
+                        obj.GetComponent<Image>().sprite = smallClubs;
+                    else if (perc > 30.77f) // 7 through 10
+                        obj.GetComponent<Image>().sprite = midClubs;
+                    else if (perc > 23.08f) // 11
+                        obj.GetComponent<Image>().sprite = jackClubs;
+                    else if (perc > 15.38f) // 12
+                        obj.GetComponent<Image>().sprite = queenClubs;
+                    else if (perc > 7.69f)
+                    { // 13
+                        //instance.SetTexture("_BaseTexture", kingClubs.texture);
+                        obj.GetComponent<Image>().sprite = kingClubs;
+                    }
+                    else // 14
+                        obj.GetComponent<Image>().sprite = aceClubs;
+
+                    break;
+
+                case Suit.Spades:
+                    if (perc > 61.54f) // 2 through 6
+                        obj.GetComponent<Image>().sprite = smallSpades;
+                    else if (perc > 30.77f) // 7 through 10
+                        obj.GetComponent<Image>().sprite = midSpades;
+                    else if (perc > 23.08f) // 11
+                        obj.GetComponent<Image>().sprite = jackSpades;
+                    else if (perc > 15.38f) // 12
+                        obj.GetComponent<Image>().sprite = queenSpades;
+                    else if (perc > 7.69f) // 13
+                        obj.GetComponent<Image>().sprite = kingSpades;
+                    else // 14
+                        obj.GetComponent<Image>().sprite = aceSpades;
+
+                    break;
+
+            }
         }
     }
 

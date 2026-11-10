@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66ff8bb55e8514643a6607c20b37513f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxTilt: 15
   isElfWeapon: 0
   isReadied: 0
   isFireBall: 0

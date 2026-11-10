@@ -123,21 +123,30 @@ public class Deck : MonoBehaviour
             {
                 case Suit.Hearts:
                 instance.SetTexture("_BaseTexture", smallHearts.texture);
+                instance.SetTexture("_Holo_Mask", smallHearts.texture);
                 break;
 
                 case Suit.Diamonds:
                 if(ScoundrelGame.instance.player != Archetype.Wizard)
+                {
                     instance.SetTexture("_BaseTexture", smallDiamonds.texture);
+                    instance.SetTexture("_Holo_Mask", smallDiamonds.texture);
+                }
                 else
+                {
                     instance.SetTexture("_BaseTexture", manaGem.texture);
+                    instance.SetTexture("_Holo_Mask", manaGem.texture);
+                }
                 break;
 
                 case Suit.Clubs:
-                instance.SetTexture("_BaseTexture", aceClubs.texture);
+                    instance.SetTexture("_BaseTexture", aceClubs.texture);
+                    instance.SetTexture("_Holo_Mask", aceClubs.texture);
                 break;
 
                 case Suit.Spades:
                 instance.SetTexture("_BaseTexture", aceSpades.texture);
+                instance.SetTexture("_Holo_Mask", aceSpades.texture);
                 break;
             }
         }

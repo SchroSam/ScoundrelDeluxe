@@ -53,6 +53,7 @@ public class ScoundrelGame : MonoBehaviour
     public int gold;
     private GameObject howToPlayCanvas;
     private bool rageUsed = false;
+    private int cardsToTake = 3;
     void Awake()
     {
         // wow singleton!
@@ -334,6 +335,7 @@ public class ScoundrelGame : MonoBehaviour
         deck.cardsOnBoard[cardO.card.slotIndex] = null;
 
         Destroy(cardO.gameObject);
+        skipButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{--cardsToTake}";
 
         // if we're still alive, procede as normal
         if(health > 0){
@@ -400,6 +402,9 @@ public class ScoundrelGame : MonoBehaviour
 
     public void NewRoom(bool skipped = false)
     {
+        cardsToTake = 3;
+        skipButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardsToTake}";
+
         if(weaponVal == 0)
             weaponButton.GetComponent<Button>().interactable = false;
 

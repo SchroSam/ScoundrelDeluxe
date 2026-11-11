@@ -227,6 +227,7 @@ MonoBehaviour:
   aceSpades: {fileID: 0}
   manaGem: {fileID: 0}
   foilMat: {fileID: 2100000, guid: 048d6c5c323615b4c98da790607386f0, type: 2}
+  skullStamp: {fileID: 21300000, guid: b6494e50cce4c4a469371edcdb53a571, type: 3}
 --- !u!1 &7393170461848003251
 GameObject:
   m_ObjectHideFlags: 0

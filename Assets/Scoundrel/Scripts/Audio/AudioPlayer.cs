@@ -45,6 +45,13 @@ public class AudioPlayer : MonoBehaviour
 
             };
 
+            sfxClips = new List<Sound>
+            {
+                new Sound(Resources.Load<AudioClip>("Audio/SFX/Healing")),
+                new Sound(Resources.Load<AudioClip>("Audio/SFX/HitSound")),
+                new Sound(Resources.Load<AudioClip>("Audio/SFX/SwordSound"))
+            };
+
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
@@ -90,12 +97,14 @@ public class AudioPlayer : MonoBehaviour
         }
     }
 
-    public void PlaySFX(string name)
+    public void PlaySFX(string name, float pitchMod = 1f)
     {
-        Sound sound = musicClips.Find(s => s.clip.name == name);
+        Sound sound = sfxClips.Find(s => s.clip.name == name);
         if (sound != null)
         {
+            //sfxSource.pitch = 1 * pitchMod;
             sfxSource.PlayOneShot(sound.clip, sound.volume);
+            //sfxSource.pitch = 1;
         }
         else
         {

@@ -19,6 +19,7 @@ public class ScoundrelGame : MonoBehaviour
     private int wizardMaxMana = 15;
     public int potionLimit = 1;
     public GameObject fireBallButton;
+    public int fireballScrolls = 0;
     public int skipLimit = 1;
     public int rageRecovery = 0;
     public Archetype player;
@@ -245,6 +246,7 @@ public class ScoundrelGame : MonoBehaviour
 
             //noPotThisRoom = false;
             health += cardO.card.value;
+            AudioPlayer.instance.PlaySFX("Healing");
 
 
             //Debug.Log($"halth > maxHealth is: {health > maxHealth}");
@@ -257,7 +259,9 @@ public class ScoundrelGame : MonoBehaviour
         // weapons
         else if (cardO.card.suit == Suit.Diamonds)
         {
-            if(player != Archetype.Wizard){
+            if(player != Archetype.Wizard)
+            {
+                AudioPlayer.instance.PlaySFX("SwordSound");
 
                 if(player == Archetype.Elf)
                 {
@@ -300,13 +304,21 @@ public class ScoundrelGame : MonoBehaviour
         // monster fighting
         else if (cardO.card.suit == Suit.Clubs || cardO.card.suit == Suit.Spades)
         {
-            if(player != Archetype.Wizard)
-                FightMonster(cardO.card);
-            else if(fireBallButton.GetComponent<WeaponButton>().isReadied)
+            AudioPlayer.instance.PlaySFX("HitSound"); //cardO.card.value);
+
+            if(fireBallButton.GetComponent<WeaponButton>().isReadied)
             {
                 FightMonsterFireball(cardO.card);
-                SetButtonActive(fireBallButton, false);
+                
+                if(--fireballScrolls <= 0)
+                    SetButtonActive(fireBallButton, false);
+
+                fireBallButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{fireballScrolls}";
+                fireBallButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{fireballScrolls}";
+
             }
+            else if(player != Archetype.Wizard)
+                FightMonster(cardO.card);
             else
                 FightMonsterWizard(cardO.card);
             
@@ -383,6 +395,8 @@ public class ScoundrelGame : MonoBehaviour
 
     public void NewRoom(bool skipped = false)
     {
+        if(weaponVal == 0)
+            weaponButton.GetComponent<Button>().interactable = false;
 
         if(!skipped)
             skipsInARow = 0;
@@ -446,10 +460,10 @@ public class ScoundrelGame : MonoBehaviour
     {
         Color onColor;
 
-        if(player != Archetype.Wizard)
-            onColor = Color.green;
-        else if(weaponSelected.isFireBall)
+        if(weaponSelected.isFireBall)
             onColor = Color.red;
+        else if(player != Archetype.Wizard)
+            onColor = Color.green;
         else
             onColor = Color.cyan;
 
@@ -607,12 +621,12 @@ public class ScoundrelGame : MonoBehaviour
 
         health -= card.value;
 
-        wizardMana -= card.value;
+        // wizardMana -= card.value;
 
-        if(wizardMana < 0)
-            wizardMana = 0;
+        // if(wizardMana < 0)
+        //     wizardMana = 0;
 
-        spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
+        // spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
 
         healthText.text = $"Health: {health}/{maxHealth}";
 
@@ -797,6 +811,7 @@ public class ScoundrelGame : MonoBehaviour
                 fireBallButton.GetComponent<WeaponButton>().isReadied = false;
                 skipLimit = 1;
                 rageRecovery = 0;
+                fireballScrolls = 0;
             }
             
         }
@@ -810,14 +825,18 @@ public class ScoundrelGame : MonoBehaviour
         button.transform.GetChild(0).GetComponent<TMP_Text>().enabled = active;
     }
 
+    #if UNITY_EDITOR
     // DEBUG BUTTONS
     public void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
             gold += 1000;
             WinRound();
         }
     }
+
+    #endif
 
 }

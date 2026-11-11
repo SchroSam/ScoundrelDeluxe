@@ -32,6 +32,7 @@ public class Deck : MonoBehaviour
 
     public Sprite manaGem;
     public Material foilMat;
+    public Sprite skullStamp;
 
     public Sequence FlipTop(RectTransform spot, int index)
     {
@@ -103,18 +104,49 @@ public class Deck : MonoBehaviour
 
         Image image = obj.GetComponent<Image>();
 
-        if(perc < 7.69f)
+        if(perc < 30.77f)
             image.material = foilMat;
 
         Material instance = new Material(image.material);
 
 
-        if(perc < 7.69f)
+        if(perc < 30.77f)
         {
             instance.SetTextureScale("_BaseTexture", Vector2.one);
             instance.SetTextureOffset("_BaseTexture", Vector2.zero);
             instance.SetFloat("_Holo_Offset", Random.Range(0.0f, 100.0f));
             instance.SetVector("_Holo_Direction", new Vector4(Random.Range(1.0f, 2.0f), Random.Range(1.0f, 2.0f)));
+
+            int temp = Random.Range(0, 4);
+            Sprite monsterArt = GetMonsterArt(suit, perc);
+
+            //Full art
+            if(temp == 1)
+            {
+                instance.SetFloat("_Holo_Density", 0.01f);
+                instance.SetFloat("_Holo_Noise_Scale", 42f);
+                instance.SetFloat("_Holo_Anim_Speed", 0.1f);
+                instance.SetFloat("_Holo_Offset", 100.0f);
+                instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
+            }
+            //Full art smooth
+            else if(temp == 2)
+            {
+                instance.SetFloat("_Holo_Density", 0.01f);
+                instance.SetFloat("_Holo_Noise_Scale", 0.01f);
+                instance.SetFloat("_Holo_Anim_Speed", 0.1f);
+                instance.SetFloat("_Holo_Offset", 100.0f);
+                instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
+            }
+            //Skull stamp
+            else if(temp == 3 && (suit == Suit.Spades || suit == Suit.Clubs))
+            {
+                instance.SetColor("_Holo_Color",  new Color(138f, 0f, 0f));
+                instance.SetFloat("_Holo_Density", 0.01f);
+                instance.SetFloat("_Holo_Offset", 100.0f);
+                instance.SetFloat("_Holo_Anim_Speed", 0.21f);
+                instance.SetFloat("_Holo_Noise_Scale", 0.1f);
+            }
 
             image.material = instance;
             image.type = Image.Type.Simple;
@@ -140,13 +172,19 @@ public class Deck : MonoBehaviour
                 break;
 
                 case Suit.Clubs:
-                    instance.SetTexture("_BaseTexture", aceClubs.texture);
-                    instance.SetTexture("_Holo_Mask", aceClubs.texture);
+                    instance.SetTexture("_BaseTexture", monsterArt.texture);
+                    if(temp != 3)
+                        instance.SetTexture("_Holo_Mask", monsterArt.texture);
+                    else
+                        instance.SetTexture("_Holo_Mask", skullStamp.texture);
                 break;
 
                 case Suit.Spades:
-                instance.SetTexture("_BaseTexture", aceSpades.texture);
-                instance.SetTexture("_Holo_Mask", aceSpades.texture);
+                    instance.SetTexture("_BaseTexture", monsterArt.texture);
+                    if(temp != 3)
+                        instance.SetTexture("_Holo_Mask", monsterArt.texture);
+                    else
+                        instance.SetTexture("_Holo_Mask", skullStamp.texture);
                 break;
             }
         }
@@ -168,41 +206,51 @@ public class Deck : MonoBehaviour
                     break;
 
                 case Suit.Clubs:
-                    if (perc > 61.54f) // 2 through 6
-                        obj.GetComponent<Image>().sprite = smallClubs;
-                    else if (perc > 30.77f) // 7 through 10
-                        obj.GetComponent<Image>().sprite = midClubs;
-                    else if (perc > 23.08f) // 11
-                        obj.GetComponent<Image>().sprite = jackClubs;
-                    else if (perc > 15.38f) // 12
-                        obj.GetComponent<Image>().sprite = queenClubs;
-                    else if (perc > 7.69f)
-                    { // 13
-                        //instance.SetTexture("_BaseTexture", kingClubs.texture);
-                        obj.GetComponent<Image>().sprite = kingClubs;
-                    }
-                    else // 14
-                        obj.GetComponent<Image>().sprite = aceClubs;
+                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, perc);
 
                     break;
 
                 case Suit.Spades:
-                    if (perc > 61.54f) // 2 through 6
-                        obj.GetComponent<Image>().sprite = smallSpades;
-                    else if (perc > 30.77f) // 7 through 10
-                        obj.GetComponent<Image>().sprite = midSpades;
-                    else if (perc > 23.08f) // 11
-                        obj.GetComponent<Image>().sprite = jackSpades;
-                    else if (perc > 15.38f) // 12
-                        obj.GetComponent<Image>().sprite = queenSpades;
-                    else if (perc > 7.69f) // 13
-                        obj.GetComponent<Image>().sprite = kingSpades;
-                    else // 14
-                        obj.GetComponent<Image>().sprite = aceSpades;
+                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, perc);
 
                     break;
 
             }
+        }
+    }
+
+    Sprite GetMonsterArt(Suit suit, float perc)
+    {
+        switch (suit)
+        {
+            case Suit.Clubs:
+                if (perc > 61.54f)
+                    return smallClubs;
+                if (perc > 30.77f)
+                    return midClubs;
+                if (perc > 23.08f)
+                    return jackClubs;
+                if (perc > 15.38f)
+                    return queenClubs;
+                if (perc > 7.69f)
+                    return kingClubs;
+                return aceClubs;
+
+            case Suit.Spades:
+                if (perc > 61.54f)
+                    return smallSpades;
+                if (perc > 30.77f)
+                    return midSpades;
+                if (perc > 23.08f)
+                    return jackSpades;
+                if (perc > 15.38f)
+                    return queenSpades;
+                if (perc > 7.69f)
+                    return kingSpades;
+                return aceSpades;
+
+            default:
+                return null;
         }
     }
 
@@ -312,5 +360,3 @@ public class Deck : MonoBehaviour
         return 0;
     }
 }
-
-

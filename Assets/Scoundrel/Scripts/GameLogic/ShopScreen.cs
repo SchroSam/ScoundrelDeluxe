@@ -9,6 +9,8 @@ public class ShopScreen : MonoBehaviour
     public int minimumRoll = 4;
     public List<GameObject> items = new();
     private List<ShopItem> itemStats = new();
+    private int randSpecial;
+    private List<Specials> currentSpecials = new List<Specials>();
 
 
     public void GenerateItems()
@@ -16,22 +18,26 @@ public class ShopScreen : MonoBehaviour
         itemStats = new List<ShopItem>();
         goldText.text = $"Gold: {ScoundrelGame.instance.gold}";
 
+        currentSpecials.Clear();
+
         for(int i = 0; i < 4; i++)
         {
-            float temp = Random.Range(0.0f, 10.0f);
+            ItemType type = ItemType.Special;
 
-            ItemType type; //= (ItemType)Random.Range(0, 5);
+            if(i <= 1)
+            {
+                float temp = Random.Range(0.0f, 9.0f);
 
-            if(temp < 3.0f)
-                type = ItemType.Health;
-            else if (temp < 5.0f)
-                type = ItemType.Attack;
-            else if (temp < 7.0f)
-                type = ItemType.PotionCard;
-            else if (temp < 9.0f)
-                type = ItemType.WeaponCard;
-            else
-                type = ItemType.Special;
+                if(temp < 3.0f)
+                    type = ItemType.Health;
+                else if (temp < 5.0f)
+                    type = ItemType.Attack;
+                else if (temp < 7.0f)
+                    type = ItemType.PotionCard;
+                else if (temp <= 9.0f)
+                    type = ItemType.WeaponCard;
+
+            }
 
 
             float itemRoll = Random.Range(minimumRoll, minimumRoll*2 + ScoundrelGame.instance.floornum);
@@ -69,8 +75,11 @@ public class ShopScreen : MonoBehaviour
             if(itemStats[i].strength <= 0)
                 itemStats[i].strength = 1;
 
-            items[i].transform.GetChild(0).GetComponent<TMP_Text>().text = DescribeItem(itemStats[i]);
+            items[i].transform.GetChild(1).GetComponent<TMP_Text>().text = DescribeItem(itemStats[i]);
             items[i].GetComponent<Button>().interactable = true;
+
+            if(type == ItemType.Special)
+                currentSpecials.Add((Specials)randSpecial);
         }
     }
 
@@ -99,18 +108,23 @@ public class ShopScreen : MonoBehaviour
 
     public string GetSpecialDescription(int value)
     {
-        switch (ScoundrelGame.instance.player)
+        if(ScoundrelGame.instance.player == Archetype.Warrior)
+            randSpecial = Random.Range(0, 4);
+        else
+            randSpecial = Random.Range(0, 3);
+
+        switch (randSpecial)
         {
-            case Archetype.Knight:
+            case 0: // potionLimit
                 return $"A magic charm that lets you drink one more potion per room before becoming sick. \n\nWorth {value} gold.";
 
-            case Archetype.Wizard:
+            case 1: // fireball
                 return $"A disposable fireball scroll which destroys the selected and adjacent enemeis. \n\nWorth {value} gold.";
 
-            case Archetype.Elf:
+            case 2: // skipLimit
                 return $"Enchanted boots which allow the user to skip past one additional room. \n\nWorth {value} gold.";
 
-            case Archetype.Warrior:
+            case 3: // rageRecovery
                 return $"A talisman which restores the warrior's rage whenever he reaches 5 or less health (or adds 2 to this limit if already taken). \n\nWorth {value} gold.";
         }
             
@@ -124,12 +138,12 @@ public class ShopScreen : MonoBehaviour
         {
             ScoundrelGame.instance.gold -= itemStats[index].value;
             goldText.text = $"Gold: {ScoundrelGame.instance.gold}";
-            GiveItem(itemStats[index]);
+            GiveItem(itemStats[index], index);
             items[index].GetComponent<Button>().interactable = false;
         }
     }
 
-    public void GiveItem(ShopItem item)
+    public void GiveItem(ShopItem item, int index)
     {
         switch (item.type)
         {
@@ -151,24 +165,29 @@ public class ShopScreen : MonoBehaviour
             break;
 
             case ItemType.Special:
-                switch (ScoundrelGame.instance.player)
+                Specials specialType = index == 2 ? currentSpecials[0] : currentSpecials[1];
+
+                switch (specialType)
                 {
-                    case Archetype.Knight:
+                    case Specials.potionLimit:
                     ScoundrelGame.instance.potionLimit++;
 
                     break;
 
-                    case Archetype.Wizard:
+                    case Specials.fireball:
                     ScoundrelGame.instance.SetButtonActive(ScoundrelGame.instance.fireBallButton, true);
+                    ScoundrelGame.instance.fireballScrolls++;
+                    ScoundrelGame.instance.fireBallButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{ScoundrelGame.instance.fireballScrolls}";
+                    ScoundrelGame.instance.fireBallButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{ScoundrelGame.instance.fireballScrolls}";
 
                     break;
 
-                    case Archetype.Elf:
+                    case Specials.skipLimit:
                     ScoundrelGame.instance.skipLimit++;
 
                     break;
 
-                    case Archetype.Warrior:
+                    case Specials.rageRecovery:
                     
                     if(ScoundrelGame.instance.rageRecovery == 0)
                         ScoundrelGame.instance.rageRecovery = 5;
@@ -215,3 +234,5 @@ public class ShopItem
     public ItemType type;
 
 }
+
+public enum Specials {potionLimit, fireball, skipLimit, rageRecovery}

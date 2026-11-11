@@ -98,19 +98,20 @@ public class Deck : MonoBehaviour
 
     void GiveCardArt(GameObject obj, Suit suit, int value)
     {
-        float perc = CalcTopPercentile(value);
+        float percentile = value > 14 ? CalcTopPercentile(value) : 0f;
+        bool isFoil = value > 14 ? percentile < 30.77f : value >= 11;
 
 
 
         Image image = obj.GetComponent<Image>();
 
-        if(perc < 30.77f)
+        if(isFoil)
             image.material = foilMat;
 
         Material instance = new Material(image.material);
 
 
-        if(perc < 30.77f)
+        if(isFoil)
         {
             instance.SetTextureScale("_BaseTexture", Vector2.one);
             instance.SetTextureOffset("_BaseTexture", Vector2.zero);
@@ -118,7 +119,7 @@ public class Deck : MonoBehaviour
             instance.SetVector("_Holo_Direction", new Vector4(Random.Range(1.0f, 2.0f), Random.Range(1.0f, 2.0f)));
 
             int temp = Random.Range(0, 4);
-            Sprite monsterArt = GetMonsterArt(suit, perc);
+            Sprite monsterArt = GetMonsterArt(suit, value, percentile);
 
             //Full art
             if(temp == 1)
@@ -206,12 +207,12 @@ public class Deck : MonoBehaviour
                     break;
 
                 case Suit.Clubs:
-                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, perc);
+                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, value, percentile);
 
                     break;
 
                 case Suit.Spades:
-                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, perc);
+                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, value, percentile);
 
                     break;
 
@@ -219,33 +220,35 @@ public class Deck : MonoBehaviour
         }
     }
 
-    Sprite GetMonsterArt(Suit suit, float perc)
+    Sprite GetMonsterArt(Suit suit, int value, float perc)
     {
+        bool useValue = value <= 14;
+
         switch (suit)
         {
             case Suit.Clubs:
-                if (perc > 61.54f)
+                if (useValue ? value <= 6 : perc > 61.54f)
                     return smallClubs;
-                if (perc > 30.77f)
+                if (useValue ? value <= 10 : perc > 30.77f)
                     return midClubs;
-                if (perc > 23.08f)
+                if (useValue ? value == 11 : perc > 23.08f)
                     return jackClubs;
-                if (perc > 15.38f)
+                if (useValue ? value == 12 : perc > 15.38f)
                     return queenClubs;
-                if (perc > 7.69f)
+                if (useValue ? value == 13 : perc > 7.69f)
                     return kingClubs;
                 return aceClubs;
 
             case Suit.Spades:
-                if (perc > 61.54f)
+                if (useValue ? value <= 6 : perc > 61.54f)
                     return smallSpades;
-                if (perc > 30.77f)
+                if (useValue ? value <= 10 : perc > 30.77f)
                     return midSpades;
-                if (perc > 23.08f)
+                if (useValue ? value == 11 : perc > 23.08f)
                     return jackSpades;
-                if (perc > 15.38f)
+                if (useValue ? value == 12 : perc > 15.38f)
                     return queenSpades;
-                if (perc > 7.69f)
+                if (useValue ? value == 13 : perc > 7.69f)
                     return kingSpades;
                 return aceSpades;
 

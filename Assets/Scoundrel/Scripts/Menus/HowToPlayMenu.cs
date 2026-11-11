@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public enum Menu{MainMenu, GameCanvas, HowToPlay, Shop}
+
 public class HowToPlayMenu : MonoBehaviour
 {
     public Image tutorialSlide;
@@ -9,6 +12,7 @@ public class HowToPlayMenu : MonoBehaviour
     public Button forwardButton;
     public Button backwardButton;
     private int index = 0;
+    public Menu menuFrom = Menu.MainMenu;
 
     public void Awake()
     {
@@ -26,9 +30,15 @@ public class HowToPlayMenu : MonoBehaviour
     public void ReturnToStart()
     {
         GetComponent<Canvas>().enabled = false;
-        GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
-        //GetComponent<AudioSource>().Stop();
         AudioPlayer.instance.StopMusic();
+
+        if(menuFrom == Menu.MainMenu)
+            GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
+        else if(menuFrom == Menu.GameCanvas)
+        {
+            GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
+            AudioPlayer.instance.PlayMusic(AudioPlayer.instance.musicClips[Random.Range(1, 5)].clip.name);
+        }
     }
 
     public void NextSlide()

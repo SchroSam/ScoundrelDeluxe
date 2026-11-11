@@ -15,11 +15,18 @@ public class MainMenu : MonoBehaviour
         newGameButton = GameObject.Find("NewGameButton");
     }
 
-    public void HowToPlay()
+    public void HowToPlay(string menuName)
     {
-        GetComponent<Canvas>().enabled = false;
+        Menu menuFrom = menuName == "GameCanvas" ? Menu.GameCanvas : Menu.MainMenu;
+
+        if(menuFrom == Menu.MainMenu)
+            GetComponent<Canvas>().enabled = false;
+        else if(menuFrom == Menu.GameCanvas)
+            GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
+
         howToPlayCanvas.GetComponent<Canvas>().enabled = true;
-        howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
+        // howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
+        howToPlayCanvas.GetComponent<HowToPlayMenu>().menuFrom = menuFrom;
         AudioPlayer.instance.PlayMusic("08 - Shop");
     }
 

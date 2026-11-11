@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,13 +51,15 @@ public class ScoundrelGame : MonoBehaviour
     public int attackModifier = 0;
     public ShopScreen shop;
     public int gold;
-
+    private GameObject howToPlayCanvas;
+    private bool rageUsed = false;
     void Awake()
     {
         // wow singleton!
 
         if(instance == null)
         {
+            howToPlayCanvas = GameObject.Find("HowToPlayCanvas");
             instance = this;
             DontDestroyOnLoad(this);
         }
@@ -219,6 +222,8 @@ public class ScoundrelGame : MonoBehaviour
 
     public void CardSelected(CardOnObj cardO)
     {
+        if(player == Archetype.Warrior)
+            rageButton.GetComponent<Button>().interactable = false;
         // healing potions
         if(cardO.card.suit == Suit.Hearts && potionLimit > potsTakenThisRoom)
         {
@@ -401,6 +406,9 @@ public class ScoundrelGame : MonoBehaviour
         if(!skipped)
             skipsInARow = 0;
 
+        if(!rageUsed && player == Archetype.Warrior)
+            rageButton.GetComponent<Button>().interactable = true;
+
         int numSpotsFilled = 4;
 
         foreach(bool spotFilled in deck.slotsUsed)
@@ -545,15 +553,17 @@ public class ScoundrelGame : MonoBehaviour
             else
                 damageText.text = $"{weaponDamage}";
 
-            Debug.Log(damageText.text);
+            // Debug.Log(damageText.text);
             monstersSlain.Add(card);
         }
 
         healthText.text = $"Health: {health}/{maxHealth}";
 
         if(player == Archetype.Warrior && startingHealth > rageRecovery && health <= rageRecovery)
+        {
+            rageUsed = false;
             rageButton.GetComponent<Button>().interactable = true;
-
+        }
         // giving back the values to the global versions of the variables
         if(!usingWhichWeapon.Item2)
         {
@@ -595,6 +605,7 @@ public class ScoundrelGame : MonoBehaviour
         bool leftMonster = false;
         bool rightMonster = false;
 
+        int startingHealth = health;
 
         if(card.slotIndex - 1 != -1 && deck.cardsOnBoard[card.slotIndex - 1] != null && (deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.suit == Suit.Clubs || deck.cardsOnBoard[card.slotIndex - 1].GetComponent<CardOnObj>().card.suit == Suit.Spades))
             leftMonster = true;
@@ -648,11 +659,18 @@ public class ScoundrelGame : MonoBehaviour
         monstersSlain.Add(card);
 
         SelectWeaponToggle(fireBallButton.GetComponent<WeaponButton>());
+
+        if(player == Archetype.Warrior && startingHealth > rageRecovery && health <= rageRecovery)
+        {
+            rageUsed = false;
+            rageButton.GetComponent<Button>().interactable = true;
+        }
     }
 
     public void Rage()
     {
         int numSpotsFilled = 4;
+        rageUsed = true;
 
         foreach(bool spotFilled in deck.slotsUsed)
         {
@@ -670,10 +688,11 @@ public class ScoundrelGame : MonoBehaviour
             }
 
             deck.slotsUsed = new List<bool> {false, false, false, false};
+            deck.cardsOnBoard = new List<GameObject>{null, null,  null, null};
 
             rageButton.GetComponent<Button>().interactable = false;
 
-            deck.FillSpots();
+            NewRoom();
 
         }
     }
@@ -823,6 +842,14 @@ public class ScoundrelGame : MonoBehaviour
         button.GetComponent<Button>().enabled = active;
         button.GetComponent<Image>().enabled = active;
         button.transform.GetChild(0).GetComponent<TMP_Text>().enabled = active;
+    }
+
+    public void HowToPlay()
+    {
+        GetComponent<Canvas>().enabled = false;
+        howToPlayCanvas.GetComponent<Canvas>().enabled = true;
+        howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
+        AudioPlayer.instance.PlayMusic("08 - Shop");
     }
 
     #if UNITY_EDITOR

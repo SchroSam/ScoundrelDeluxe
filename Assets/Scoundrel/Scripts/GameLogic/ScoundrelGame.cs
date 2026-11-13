@@ -816,6 +816,7 @@ public class ScoundrelGame : MonoBehaviour
                 GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = false;
                 GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled = true;
                 GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+                GameObject.Find("ShopCanvas").GetComponent<Canvas>().enabled = false;
                 health = 20;
                 maxHealth = 20;
                 DisableArchSpec();

@@ -94,7 +94,7 @@ public class ShopScreen : MonoBehaviour
                 return $"A magic charm which grants a passive +{item.strength} damage to all attacks.\n\nWorth {item.value} gold.";
 
             case ItemType.PotionCard:
-                return $"Adds a potion card of strength {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
+                return $"Adds a healing potion of value {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
 
             case ItemType.WeaponCard:
                 return $"Add a weapon card of strength {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";

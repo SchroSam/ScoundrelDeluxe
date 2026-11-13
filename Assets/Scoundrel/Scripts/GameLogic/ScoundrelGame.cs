@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -317,7 +316,10 @@ public class ScoundrelGame : MonoBehaviour
                 FightMonsterFireball(cardO.card);
                 
                 if(--fireballScrolls <= 0)
+                {
                     SetButtonActive(fireBallButton, false);
+                    fireBallButton.transform.GetChild(1).GetComponent<TMP_Text>().enabled = false;
+                }
 
                 fireBallButton.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{fireballScrolls}";
                 fireBallButton.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{fireballScrolls}";
@@ -741,7 +743,10 @@ public class ScoundrelGame : MonoBehaviour
         floornum++;
 
         if(player == Archetype.Warrior)
+        {
             rageButton.GetComponent<Button>().interactable = true;
+            rageUsed = false;
+        }
 
         StartShop();
     }

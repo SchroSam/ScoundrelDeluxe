@@ -149,11 +149,11 @@ public class ShopScreen : MonoBehaviour
         {
             case ItemType.Health:
                 ScoundrelGame.instance.maxHealth += item.strength;
-                ScoundrelGame.instance.health += item.value;
+                ScoundrelGame.instance.health += item.strength;
             break;
 
             case ItemType.Attack:
-                ScoundrelGame.instance.attackModifier += item.value;
+                ScoundrelGame.instance.attackModifier += item.strength;
             break;
 
             case ItemType.PotionCard:

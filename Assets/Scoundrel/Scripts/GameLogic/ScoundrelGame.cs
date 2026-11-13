@@ -853,7 +853,7 @@ public class ScoundrelGame : MonoBehaviour
     {
         GetComponent<Canvas>().enabled = false;
         howToPlayCanvas.GetComponent<Canvas>().enabled = true;
-        howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
+        //howToPlayCanvas.GetComponent<HowToPlayMenu>().ResetSlides();
         AudioPlayer.instance.PlayMusic("08 - Shop");
     }
 

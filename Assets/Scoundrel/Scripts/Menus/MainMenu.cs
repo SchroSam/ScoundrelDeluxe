@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        QualitySettings.vSyncCount = 1;
         howToPlayCanvas = GameObject.Find("HowToPlayCanvas");
         newGameButton = GameObject.Find("NewGameButton");
     }

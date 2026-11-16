@@ -1,7 +1,10 @@
 using System;
+using UnityEngine;
 
 [Serializable]
-public enum Suit{Hearts = 1, Diamonds, Clubs, Spades,}
+public enum Suit{Hearts = 1, Diamonds, Clubs, Spades}
+[Serializable]
+public enum FoilType{None, Stripes, FullSmooth, FullTextured, SkullStamp}
 
 [Serializable]
 public class Card : IComparable
@@ -9,17 +12,23 @@ public class Card : IComparable
     public Suit suit;
     public int value;
     public int slotIndex;
+    public FoilType foilType = FoilType.None;
+    public Sprite cardArt;
 
-    public Card(Suit s, int v)
+    public Card(Suit s, int v, Sprite cardArt, FoilType foilType)
     {
         suit = s;
         value = v;
+        this.cardArt = cardArt;
+        this.foilType = foilType;
     }
     public Card(Card card)
     {
         suit = card.suit;
         value = card.value;
         slotIndex = card.slotIndex;
+        foilType = card.foilType;
+        cardArt = card.cardArt;
     }
     public Card()
     {

@@ -7,6 +7,7 @@ using DG.Tweening;
 // the top of the deck is the last element in cards
 public class Deck : MonoBehaviour
 {
+    public static Deck instance;
     public GameObject cardPrefab;
     public List<Card> cards;
     public static List<Card> fullDeck;
@@ -33,6 +34,19 @@ public class Deck : MonoBehaviour
     public Sprite manaGem;
     public Material foilMat;
     public Sprite skullStamp;
+
+    void Awake()
+    {
+        // wow singleton!
+
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+            Destroy(this);
+    }
 
     public Sequence FlipTop(RectTransform spot, int index)
     {
@@ -61,6 +75,8 @@ public class Deck : MonoBehaviour
         cardSpawn.transform.GetComponent<CardOnObj>().card.suit = cardInfo.suit;
         cardSpawn.transform.GetComponent<CardOnObj>().card.value = cardInfo.value;
         cardSpawn.transform.GetComponent<CardOnObj>().card.slotIndex = index;
+        cardSpawn.transform.GetComponent<CardOnObj>().card.foilType = cardInfo.foilType;
+        cardSpawn.transform.GetComponent<CardOnObj>().card.cardArt = cardInfo.cardArt;
         cardsOnBoard[index] = cardSpawn;
         cardSpawn.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
         cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().text = $"{cardInfo.value}{cardInfo.SuitString()}";
@@ -71,7 +87,7 @@ public class Deck : MonoBehaviour
             cardSpawn.transform.GetChild(1).GetComponent<TMP_Text>().color = Color.red;
         }
         
-        GiveCardArt(cardSpawn, cardInfo.suit, cardInfo.value);
+        GiveCardVisuals(cardSpawn, cardInfo);
 
 
 
@@ -96,128 +112,111 @@ public class Deck : MonoBehaviour
         return fullDeck.Count == 0 ? 0f : cardsGreaterOrEqual * 100f / fullDeck.Count;
     }
 
-    void GiveCardArt(GameObject obj, Suit suit, int value)
+    void GiveCardVisuals(GameObject obj, Card card)
+        {
+
+            Image image = obj.GetComponent<Image>();
+            image.sprite = card.cardArt;
+
+            if(card.foilType != FoilType.None)
+                image.material = foilMat;
+
+            Material instance = new Material(image.material);
+
+
+            if(card.foilType != FoilType.None)
+            {
+                instance.SetTextureScale("_BaseTexture", Vector2.one);
+                instance.SetTextureOffset("_BaseTexture", Vector2.zero);
+                instance.SetFloat("_Holo_Offset", Random.Range(0.0f, 100.0f));
+                instance.SetVector("_Holo_Direction", new Vector4(Random.Range(1.0f, 2.0f), Random.Range(1.0f, 2.0f)));
+
+                //Full art
+                if(card.foilType == FoilType.FullTextured)
+                {
+                    instance.SetFloat("_Holo_Density", 0.01f);
+                    instance.SetFloat("_Holo_Noise_Scale", 42f);
+                    instance.SetFloat("_Holo_Anim_Speed", 0.1f);
+                    instance.SetFloat("_Holo_Offset", 100.0f);
+                    instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
+                }
+                //Full art smooth
+                else if(card.foilType == FoilType.FullSmooth)
+                {
+                    instance.SetFloat("_Holo_Density", 0.01f);
+                    instance.SetFloat("_Holo_Noise_Scale", 0.01f);
+                    instance.SetFloat("_Holo_Anim_Speed", 0.1f);
+                    instance.SetFloat("_Holo_Offset", 100.0f);
+                    instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
+                }
+                //Skull stamp
+                else if(card.foilType == FoilType.SkullStamp)
+                {
+                    instance.SetColor("_Holo_Color",  new Color(138f, 0f, 0f));
+                    instance.SetFloat("_Holo_Density", 0.01f);
+                    instance.SetFloat("_Holo_Offset", 100.0f);
+                    instance.SetFloat("_Holo_Anim_Speed", 0.21f);
+                    instance.SetFloat("_Holo_Noise_Scale", 0.1f);
+                }
+
+                image.material = instance;
+                image.type = Image.Type.Simple;
+
+                instance.SetTexture("_BaseTexture", card.cardArt.texture);
+
+                if(card.foilType != FoilType.SkullStamp)
+                    instance.SetTexture("_Holo_Mask", card.cardArt.texture);
+                else
+                    instance.SetTexture("_Holo_Mask", skullStamp.texture);
+            }
+            // else
+            // {
+            //     image.sprite = card.cardArt;
+            // }
+        }
+
+    public FoilType RandFoilType(Suit suit)
+    {
+        FoilType foil = FoilType.None;
+
+        if(Random.Range(0, 12) == 0)
+        {
+
+            if(suit == Suit.Clubs || suit == Suit.Spades)
+                foil = (FoilType)Random.Range(1, 5);
+            else
+                foil = (FoilType)Random.Range(1, 4);
+
+        }
+            
+        return foil;
+    }
+
+    public Sprite GiveCardArt(Suit suit, int value)
     {
         float percentile = value > 14 ? CalcTopPercentile(value) : 0f;
-        bool isFoil = value > 14 ? percentile < 30.77f : value >= 11;
-
-
-
-        Image image = obj.GetComponent<Image>();
-
-        if(isFoil)
-            image.material = foilMat;
-
-        Material instance = new Material(image.material);
-
-
-        if(isFoil)
-        {
-            instance.SetTextureScale("_BaseTexture", Vector2.one);
-            instance.SetTextureOffset("_BaseTexture", Vector2.zero);
-            instance.SetFloat("_Holo_Offset", Random.Range(0.0f, 100.0f));
-            instance.SetVector("_Holo_Direction", new Vector4(Random.Range(1.0f, 2.0f), Random.Range(1.0f, 2.0f)));
-
-            int temp = Random.Range(0, 4);
-            Sprite monsterArt = GetMonsterArt(suit, value, percentile);
-
-            //Full art
-            if(temp == 1)
-            {
-                instance.SetFloat("_Holo_Density", 0.01f);
-                instance.SetFloat("_Holo_Noise_Scale", 42f);
-                instance.SetFloat("_Holo_Anim_Speed", 0.1f);
-                instance.SetFloat("_Holo_Offset", 100.0f);
-                instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
-            }
-            //Full art smooth
-            else if(temp == 2)
-            {
-                instance.SetFloat("_Holo_Density", 0.01f);
-                instance.SetFloat("_Holo_Noise_Scale", 0.01f);
-                instance.SetFloat("_Holo_Anim_Speed", 0.1f);
-                instance.SetFloat("_Holo_Offset", 100.0f);
-                instance.SetVector("_Holo_Direction", new Vector2(0.19f, -0.43f));
-            }
-            //Skull stamp
-            else if(temp == 3 && (suit == Suit.Spades || suit == Suit.Clubs))
-            {
-                instance.SetColor("_Holo_Color",  new Color(138f, 0f, 0f));
-                instance.SetFloat("_Holo_Density", 0.01f);
-                instance.SetFloat("_Holo_Offset", 100.0f);
-                instance.SetFloat("_Holo_Anim_Speed", 0.21f);
-                instance.SetFloat("_Holo_Noise_Scale", 0.1f);
-            }
-
-            image.material = instance;
-            image.type = Image.Type.Simple;
-
-            switch (suit)
-            {
-                case Suit.Hearts:
-                instance.SetTexture("_BaseTexture", smallHearts.texture);
-                instance.SetTexture("_Holo_Mask", smallHearts.texture);
-                break;
-
-                case Suit.Diamonds:
-                if(ScoundrelGame.instance.player != Archetype.Wizard)
-                {
-                    instance.SetTexture("_BaseTexture", smallDiamonds.texture);
-                    instance.SetTexture("_Holo_Mask", smallDiamonds.texture);
-                }
-                else
-                {
-                    instance.SetTexture("_BaseTexture", manaGem.texture);
-                    instance.SetTexture("_Holo_Mask", manaGem.texture);
-                }
-                break;
-
-                case Suit.Clubs:
-                    instance.SetTexture("_BaseTexture", monsterArt.texture);
-                    if(temp != 3)
-                        instance.SetTexture("_Holo_Mask", monsterArt.texture);
-                    else
-                        instance.SetTexture("_Holo_Mask", skullStamp.texture);
-                break;
-
-                case Suit.Spades:
-                    instance.SetTexture("_BaseTexture", monsterArt.texture);
-                    if(temp != 3)
-                        instance.SetTexture("_Holo_Mask", monsterArt.texture);
-                    else
-                        instance.SetTexture("_Holo_Mask", skullStamp.texture);
-                break;
-            }
-        }
-        else
-        {
 
             switch (suit)
             {
                 case Suit.Hearts:
                     //instance.SetTexture("_BaseTexture", smallHearts.texture);
-                    obj.GetComponent<Image>().sprite = smallHearts;
-                    break;
+                    return smallHearts;
 
                 case Suit.Diamonds:
                     if(ScoundrelGame.instance.player != Archetype.Wizard)
-                        obj.GetComponent<Image>().sprite = smallDiamonds;
+                        return smallDiamonds;
                     else
-                        obj.GetComponent<Image>().sprite = manaGem;
-                    break;
+                        return manaGem;
 
                 case Suit.Clubs:
-                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, value, percentile);
-
-                    break;
+                    return GetMonsterArt(suit, value, percentile);
 
                 case Suit.Spades:
-                    obj.GetComponent<Image>().sprite = GetMonsterArt(suit, value, percentile);
-
-                    break;
+                    return GetMonsterArt(suit, value, percentile);
 
             }
-        }
+
+            return skullStamp;
     }
 
     Sprite GetMonsterArt(Suit suit, int value, float perc)
@@ -303,7 +302,7 @@ public class Deck : MonoBehaviour
         {
             var cardData = obj.GetComponent<CardOnObj>().card;
             // Create a new Card with the same suit and value
-            tuckedCards.Add(new Card(cardData.suit, cardData.value));
+            tuckedCards.Add(new Card(cardData.suit, cardData.value, cardData.cardArt, cardData.foilType));
             Destroy(obj);
         }
 
@@ -325,7 +324,7 @@ public class Deck : MonoBehaviour
         {
             for(int j = 2; j <= 14; j++)
             {
-                fullDeck.Add(new Card((Suit)i, j));
+                fullDeck.Add(new Card((Suit)i, j, GiveCardArt((Suit)i, j), RandFoilType((Suit)i)));
             }
         }
 

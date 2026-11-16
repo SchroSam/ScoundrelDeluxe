@@ -157,11 +157,11 @@ public class ShopScreen : MonoBehaviour
             break;
 
             case ItemType.PotionCard:
-                Deck.fullDeck.Add(new Card(Suit.Hearts, item.value));
+                Deck.fullDeck.Add(new Card(Suit.Hearts, item.strength, Deck.instance.GiveCardArt(Suit.Hearts, item.strength), Deck.instance.RandFoilType(Suit.Hearts)));
             break;
 
             case ItemType.WeaponCard:
-                Deck.fullDeck.Add(new Card(Suit.Diamonds, item.value));
+                Deck.fullDeck.Add(new Card(Suit.Diamonds, item.strength, Deck.instance.GiveCardArt(Suit.Diamonds, item.strength), Deck.instance.RandFoilType(Suit.Diamonds)));
             break;
 
             case ItemType.Special:

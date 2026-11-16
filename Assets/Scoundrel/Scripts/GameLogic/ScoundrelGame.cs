@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,6 +54,7 @@ public class ScoundrelGame : MonoBehaviour
     private GameObject howToPlayCanvas;
     private bool rageUsed = false;
     private int cardsToTake = 3;
+    private GameObject endGreyOut;
     void Awake()
     {
         // wow singleton!
@@ -91,6 +93,12 @@ public class ScoundrelGame : MonoBehaviour
 
         if(shop == null)
             shop = FindFirstObjectByType<ShopScreen>();
+
+        if(fireBallButton == null)
+            fireBallButton = GameObject.Find("FireBall");
+
+        if(endGreyOut == null)
+            endGreyOut = GameObject.Find("GameCanvas").transform.Find("GreyOut").gameObject;
         
         deck.CreateNew52();
         deck.RemoveTopN(52 - startingDeckSize);
@@ -708,6 +716,7 @@ public class ScoundrelGame : MonoBehaviour
 
     void WinRound()
     {
+        endGreyOut.GetComponent<Image>().enabled = true;
         winLoseText.text = winMessage;
         winLoseText.enabled = true;
         
@@ -757,11 +766,18 @@ public class ScoundrelGame : MonoBehaviour
 
         for(int i = 0; i < monstersPerFloor; i++)
         {
+            int monsterSuit = UnityEngine.Random.Range(0, 2);
+            int value = UnityEngine.Random.Range(5, 11) + floornum;
+
             monster = new Card
             {
-                suit = UnityEngine.Random.Range(0, 2) == 0 ? Suit.Clubs : Suit.Spades,
+                suit = monsterSuit == 0 ? Suit.Clubs : Suit.Spades,
 
-                value = UnityEngine.Random.Range(5, 11) + floornum
+                value = value,
+
+                foilType = Deck.instance.RandFoilType((Suit)(monsterSuit + 2)),
+
+                cardArt = Deck.instance.GiveCardArt((Suit)(monsterSuit + 2), value)
             };
 
             if(monster.value >= maxDamage)
@@ -784,6 +800,7 @@ public class ScoundrelGame : MonoBehaviour
 
     void PlayerDeath()
     {
+        endGreyOut.GetComponent<Image>().enabled = true;
         winLoseText.text = loseMessage;
         winLoseText.enabled = true;
 
@@ -800,6 +817,7 @@ public class ScoundrelGame : MonoBehaviour
     {
         if(GameObject.Find("StartCanvas").GetComponent<Canvas>().enabled == false)
         {
+            endGreyOut.GetComponent<Image>().enabled = false;
             Button[] buttons = FindObjectsByType<Button>(FindObjectsSortMode.None);
 
             foreach (Button button in buttons)

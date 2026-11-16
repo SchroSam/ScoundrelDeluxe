@@ -56,6 +56,8 @@ public class Deck : MonoBehaviour
 
         Card cardInfo = new Card(cards[cards.Count - 1]);
 
+        // Debug.LogWarning($"{cardInfo.suit} ; {cardInfo.value} ; {cardInfo.slotIndex} ; {cardInfo.foilType} ; {cardInfo.cardArt}");
+
         cards.RemoveAt(cards.Count - 1);
 
         // Instantiate on top of the deck, then arc over to the spot.

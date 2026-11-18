@@ -1,7 +1,10 @@
 fileFormatVersion: 2
-guid: 45ac0ea12640d7a48b27c59476f3ad20
+guid: 82e66f7912e655844a1215f23d6d7267
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 818955850448718388
+    second: guy_with_axe_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -94,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -108,7 +111,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: guy_with_axe_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1558
+        height: 1541
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43a49b8c1048d5b00800000000000000
+      internalID: 818955850448718388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []

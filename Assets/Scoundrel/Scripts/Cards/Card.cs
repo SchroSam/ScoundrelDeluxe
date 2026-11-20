@@ -81,26 +81,26 @@ public class Card : IComparable
 
     }
 
-    public static string ValToString(int val)
-    {
-        switch (val)
-        {
-            case 11:
-                return "J";
+    // public static string ValToString(int val)
+    // {
+    //     switch (val)
+    //     {
+    //         case 11:
+    //             return "J";
 
-            case 12:
-                return "Q";
+    //         case 12:
+    //             return "Q";
 
-            case 13:
-                return "K";
+    //         case 13:
+    //             return "K";
 
-            case 14:
-                return "A";
+    //         case 14:
+    //             return "A";
 
-            default:
-                return $"{val}";
-        }
-    }
+    //         default:
+    //             return $"{val}";
+    //     }
+    // }
 
     // CompareTo function for sorting based on value
     public int CompareTo(object obj)

@@ -275,8 +275,6 @@ public class Deck : MonoBehaviour
         }
 
         sq.PlayForward();
-
-        GameObject.Find("Progress").GetComponent<Slider>().value = 1 - ((float)cards.Count/fullDeck.Count);
     }
 
     //Fisher-Yattes random list scramble

@@ -91,7 +91,7 @@ public class ShopScreen : MonoBehaviour
                 return $"A fortifying draught which increases your max health by {item.strength}.\n\nWorth {item.value} gold.";
 
             case ItemType.Attack:
-                return $"A magic charm which grants a passive +{item.strength} damage to all attacks.\n\nWorth {item.value} gold.";
+                return $"A magic charm which reduces the strength of all monsters currently in the deck by {item.strength}.\n\nWorth {item.value} gold.";
 
             case ItemType.PotionCard:
                 return $"Adds a healing potion of value {item.strength} to the deck permanently.\n\nWorth {item.value} gold.";
@@ -153,7 +153,12 @@ public class ShopScreen : MonoBehaviour
             break;
 
             case ItemType.Attack:
-                ScoundrelGame.instance.attackModifier += item.strength;
+                for(int i = Deck.fullDeck.Count - 1; i >= 0; i--)
+                {
+                    if(Deck.fullDeck[i].suit == Suit.Clubs || Deck.fullDeck[i].suit == Suit.Spades)
+                        if(--Deck.fullDeck[i].value <= 0)
+                            Deck.fullDeck.RemoveAt(i);
+                }
             break;
 
             case ItemType.PotionCard:
@@ -207,8 +212,7 @@ public class ShopScreen : MonoBehaviour
         AudioPlayer.instance.StopMusic();
         AudioPlayer.instance.PlayMusic(AudioPlayer.instance.musicClips[Random.Range(1, 5)].clip.name);
         ScoundrelGame.instance.healthText.text = $"Health: {ScoundrelGame.instance.health}/{ScoundrelGame.instance.maxHealth}";
-        if(ScoundrelGame.instance.attackModifier > 0)
-            GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = $"Attack Modifier: +{ScoundrelGame.instance.attackModifier}";
+        ScoundrelGame.instance.healthBar.value = (float)ScoundrelGame.instance.health/ScoundrelGame.instance.maxHealth;
         GameObject.Find("GameCanvas").GetComponent<Canvas>().enabled = true;
     }
 }

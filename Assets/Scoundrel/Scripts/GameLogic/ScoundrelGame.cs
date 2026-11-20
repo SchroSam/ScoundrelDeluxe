@@ -243,7 +243,7 @@ public class ScoundrelGame : MonoBehaviour
         {
             potsTakenThisRoom++;
 
-            Debug.LogWarning("Potion taken!");
+            // Debug.LogWarning("Potion taken!");
 
             if(potsTakenThisRoom >= potionLimit)
             {

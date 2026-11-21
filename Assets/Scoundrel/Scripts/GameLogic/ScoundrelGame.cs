@@ -341,7 +341,14 @@ public class ScoundrelGame : MonoBehaviour
 
             }
             else if(player != Archetype.Wizard)
-                FightMonster(cardO.card);
+            {
+                if(weaponButton.GetComponent<WeaponButton>().isReadied)
+                    FightMonster(cardO.card, ref weaponDamage, ref weaponVal, ref damageText);
+                else if(elfWeaponButton.GetComponent<WeaponButton>().isReadied)
+                    FightMonster(cardO.card, ref elfWeaponDamage, ref elfWeaponVal, ref elfDamageText);
+                else
+                    FightMonster(cardO.card);
+            }
             else
                 FightMonsterWizard(cardO.card);
             
@@ -524,59 +531,38 @@ public class ScoundrelGame : MonoBehaviour
 
     void FightMonster(Card card)
     {
-        // first val represents if we're using a weapon, second val is what weapon we're using (false for normal weapon, true for elf weapon)
-        Tuple <bool, bool> usingWhichWeapon;
-
-        // find which if either button is readied
-        if(weaponButton.GetComponent<WeaponButton>().isReadied)
-            usingWhichWeapon = new Tuple<bool, bool>(true, false);
-        else if(elfWeaponButton.GetComponent<WeaponButton>().isReadied)
-            usingWhichWeapon = new Tuple<bool, bool>(true, true);
-        else
-            usingWhichWeapon = new Tuple<bool, bool>(false, false);
-
-
-        // use the weapon's information that's selected in the comparisons
-        int weaponDamage;
-        int weaponVal;
-        TMP_Text damageText;
-
-        if(!usingWhichWeapon.Item2)
-        {
-            damageText = this.damageText;
-            weaponDamage = this.weaponDamage;
-            weaponVal = this.weaponVal;
-        }
-        else
-        {
-            damageText = elfDamageText;
-            weaponDamage = elfWeaponDamage;
-            weaponVal = elfWeaponVal;
-        }
-
         int startingHealth = health;
 
-        // actual damage logic
-        if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
-        {
-            // int damage = card.value - attackModifier;
+        if(card.value > 0)
+            health -= card.value;
 
-            if (card.value > 0)
+        healthText.text = $"Health: {health}/{maxHealth}";
+        healthBar.value = (float)health/maxHealth;
+
+        if(player == Archetype.Warrior && startingHealth > rageRecovery && health <= rageRecovery)
+        {
+            rageUsed = false;
+            rageButton.GetComponent<Button>().interactable = true;
+        }
+    }
+
+    void FightMonster(Card card, ref int weaponDamage, ref int weaponVal, ref TMP_Text damageText)
+    {
+        int startingHealth = health;
+
+        if(weaponDamage < card.value && weaponDamage != maxDamage)
+        {
+            if(card.value > 0)
                 health -= card.value;
         }
-        else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == maxDamage)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
+        else
         {
             if(card.value - weaponVal > 0)
                 health -= card.value - weaponVal;
 
-            weaponDamage = card.value;
+            weaponDamage = card.value - 1;
+            damageText.text = $"{weaponDamage}";
 
-            if(weaponDamage != maxDamage)
-                damageText.text = $"{weaponDamage - 1}";
-            else
-                damageText.text = $"{weaponDamage}";
-
-            // Debug.Log(damageText.text);
             monstersSlain.Add(card);
         }
 
@@ -587,17 +573,6 @@ public class ScoundrelGame : MonoBehaviour
         {
             rageUsed = false;
             rageButton.GetComponent<Button>().interactable = true;
-        }
-        // giving back the values to the global versions of the variables
-        if(!usingWhichWeapon.Item2)
-        {
-            this.damageText.text = damageText.text;
-            this.weaponDamage = weaponDamage;
-        }
-        else
-        {
-            elfDamageText.text = damageText.text;
-            elfWeaponDamage = weaponDamage;
         }
     }
 
@@ -741,8 +716,6 @@ public class ScoundrelGame : MonoBehaviour
 
         shopButton.GetComponent<Button>().interactable = true;
 
-        GameObject.Find("Progress").GetComponent<Slider>().value = 1f;
-
         SetButtonActive(shopButton, true);
 
         for(int i = 0; i < monstersSlain.Count; i++)
@@ -777,18 +750,18 @@ public class ScoundrelGame : MonoBehaviour
 
         for(int i = 0; i < monstersPerFloor; i++)
         {
-            int monsterSuit = UnityEngine.Random.Range(0, 2);
+            Suit generatedSuit = UnityEngine.Random.Range(0, 2) == 0 ? Suit.Clubs : Suit.Spades;
             int value = UnityEngine.Random.Range(5, 11) + floornum;
 
             monster = new Card
             {
-                suit = monsterSuit == 0 ? Suit.Clubs : Suit.Spades,
+                suit = generatedSuit,
 
                 value = value,
 
-                foilType = Deck.instance.RandFoilType((Suit)(monsterSuit + 2)),
+                foilType = Deck.instance.RandFoilType(generatedSuit),
 
-                cardArt = Deck.instance.GiveCardArt((Suit)(monsterSuit + 2), value)
+                cardArt = Deck.instance.GiveCardArt(generatedSuit, value)
             };
 
             if(monster.value >= maxDamage)

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,13 +27,14 @@ public class ScoundrelGame : MonoBehaviour
     private List<Card> monstersSlain;
     public Deck deck;
     public TMP_Text healthText;
+    public Slider healthBar;
     private TMP_Text damageText;
     private TMP_Text elfDamageText;
     private GameObject weaponButton;
     private GameObject elfWeaponButton;
     private GameObject primaryWeaponToggle;
     private GameObject skipButton;
-    private string playerName = "Scott";
+    // private string playerName = "Scott";
     // private bool noPotThisRoom = true;
     private int potsTakenThisRoom = 0;
     private int skipsInARow = 0;
@@ -48,7 +49,7 @@ public class ScoundrelGame : MonoBehaviour
     public int startingDeckSize = 32;
     public int floornum = 1;
     public int monstersPerFloor = 3;
-    public int attackModifier = 0;
+    // public int attackModifier = 0;
     public ShopScreen shop;
     public int gold;
     private GameObject howToPlayCanvas;
@@ -73,7 +74,7 @@ public class ScoundrelGame : MonoBehaviour
         if(deck == null)
             deck = FindFirstObjectByType<Deck>();
 
-        GameObject.Find("Name").GetComponent<TMP_Text>().text = playerName;
+        // GameObject.Find("Name").GetComponent<TMP_Text>().text = playerName;
 
         if(healthText == null)
             healthText = GameObject.Find("Health").GetComponent<TMP_Text>();
@@ -99,6 +100,11 @@ public class ScoundrelGame : MonoBehaviour
 
         if(endGreyOut == null)
             endGreyOut = GameObject.Find("GameCanvas").transform.Find("GreyOut").gameObject;
+
+        if(healthBar == null)
+            healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
+
+        healthBar.value = (float)health/maxHealth;
         
         deck.CreateNew52();
         deck.RemoveTopN(52 - startingDeckSize);
@@ -125,7 +131,7 @@ public class ScoundrelGame : MonoBehaviour
                 maxHealth += 7;
                 health += 7;
 
-                playerName = "Reynault - Knight";
+                // playerName = "Reynault - Knight";
                 break;
 
             // For the wizard, weapons are not swords, they are mana potions.
@@ -146,7 +152,7 @@ public class ScoundrelGame : MonoBehaviour
                 SetButtonActive(weaponButton, false);
                 damageText.enabled = false;
 
-                playerName = "Merlin - Wizard";
+                // playerName = "Merlin - Wizard";
                 break;
 
             // Elf is less healthy, but they have two weapon fighting
@@ -164,7 +170,7 @@ public class ScoundrelGame : MonoBehaviour
 
                 elfDamageText.enabled = true;
 
-                playerName = "Questor - Elf";
+                // playerName = "Questor - Elf";
                 break;
 
             // Warrior can once per game go into a rage and destroy everything in the room without taking any damage
@@ -175,7 +181,7 @@ public class ScoundrelGame : MonoBehaviour
 
                 SetButtonActive(rageButton, true);
 
-                playerName = "Dwalin - Warrior";
+                // playerName = "Dwalin - Warrior";
                 break;
 
         }
@@ -237,7 +243,7 @@ public class ScoundrelGame : MonoBehaviour
         {
             potsTakenThisRoom++;
 
-            Debug.LogWarning("Potion taken!");
+            // Debug.LogWarning("Potion taken!");
 
             if(potsTakenThisRoom >= potionLimit)
             {
@@ -267,6 +273,7 @@ public class ScoundrelGame : MonoBehaviour
                 health = maxHealth;
 
             healthText.text = $"Health: {health}/{maxHealth}";
+            healthBar.value = (float)health/maxHealth;
         }
 
         // weapons
@@ -344,6 +351,7 @@ public class ScoundrelGame : MonoBehaviour
         deck.slotsUsed[cardO.card.slotIndex] = false;
         deck.cardsOnBoard[cardO.card.slotIndex] = null;
 
+        cardO.DOKill();
         Destroy(cardO.gameObject);
         GameObject.Find("CardsTaken").GetComponent<TMP_Text>().text = $"Cards to take: {--cardsToTake}";
 
@@ -551,15 +559,15 @@ public class ScoundrelGame : MonoBehaviour
         // actual damage logic
         if(!usingWhichWeapon.Item1 || (weaponDamage <= card.value && weaponDamage != maxDamage))
         {
-            int damage = card.value - attackModifier;
+            // int damage = card.value - attackModifier;
 
-            if (damage > 0)
-                health -= damage;
+            if (card.value > 0)
+                health -= card.value;
         }
         else if ((usingWhichWeapon.Item1 && weaponDamage > card.value) || (usingWhichWeapon.Item1 && weaponDamage == maxDamage)) // technically usingWhicWeapon.Item1 must be true if we made it here implicitly
         {
-            if(card.value - attackModifier - weaponVal > 0)
-                health -= card.value - attackModifier - weaponVal;
+            if(card.value - weaponVal > 0)
+                health -= card.value - weaponVal;
 
             weaponDamage = card.value;
 
@@ -573,6 +581,7 @@ public class ScoundrelGame : MonoBehaviour
         }
 
         healthText.text = $"Health: {health}/{maxHealth}";
+        healthBar.value = (float)health/maxHealth;
 
         if(player == Archetype.Warrior && startingHealth > rageRecovery && health <= rageRecovery)
         {
@@ -613,6 +622,7 @@ public class ScoundrelGame : MonoBehaviour
 
         monstersSlain.Add(card);
         healthText.text = $"Health: {health}/{maxHealth}";
+        healthBar.value = (float)health/maxHealth;
     }
 
     void FightMonsterFireball(Card card)
@@ -655,6 +665,7 @@ public class ScoundrelGame : MonoBehaviour
         // spellSlot.transform.GetChild(0).GetComponent<TMP_Text>().text = $"{wizardMana}M";
 
         healthText.text = $"Health: {health}/{maxHealth}";
+        healthBar.value = (float)health/maxHealth;
 
         if (leftMonster)
         {
@@ -851,7 +862,6 @@ public class ScoundrelGame : MonoBehaviour
                 weaponButton.GetComponent<Button>().interactable = false;
                 weaponButton.GetComponent<Image>().color = Color.grey;
                 AudioPlayer.instance.StopMusic();
-                attackModifier = 0;
                 gold = 0;
                 GameObject.Find("AttackModifier").GetComponent<TMP_Text>().text = "";
                 potionLimit = 1;

@@ -42,7 +42,7 @@ public class Deck : MonoBehaviour
         if(instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this);
+            // DontDestroyOnLoad(this);
         }
         else
             Destroy(this);
